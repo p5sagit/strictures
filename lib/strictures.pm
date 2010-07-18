@@ -25,7 +25,7 @@ sub import {
   };
   if ($do_indirect) {
     if (eval { require indirect; 1 }) {
-      indirect->unimport('FATAL');
+      indirect->unimport(':fatal');
     } else {
       die "strictures.pm extra testing active but couldn't load indirect.pm: $@";
     }
@@ -105,3 +105,48 @@ when its version is tested to ensure that
 
 will continue to only introduce the current set of strictures even if 2.0 is
 installed.
+
+=head1 METHODS
+
+=head2 import
+
+This method does the setup work described above in L</DESCRIPTION>
+
+=head2 VERSION
+
+This method traps the strictures->VERSION(1) call produced by a use line
+with a version number on it and does the version check.
+
+=head1 COMMUNITY AND SUPPORT
+
+=head2 IRC channel
+
+irc.perl.org #toolchain
+
+(or bug 'mst' in query on there or freenode)
+
+=head2 Git repository
+
+Gitweb is on http://git.shadowcat.co.uk/ and the clone URL is:
+
+  git clone git://git.shadowcat.co.uk/p5sagit/strictures.git
+
+=head1 AUTHOR
+
+Matt S. Trout <mst@shadowcat.co.uk>
+
+=head1 CONTRIBUTORS
+
+None required yet. Maybe this module is perfect (hahahahaha ...).
+
+=head1 COPYRIGHT
+
+Copyright (c) 2010 the strictures L</AUTHOR> and L</CONTRIBUTORS>
+as listed above.
+
+=head1 LICENSE
+
+This library is free software and may be distributed under the same terms
+as perl itself.
+
+=cut
