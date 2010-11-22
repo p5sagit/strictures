@@ -54,6 +54,7 @@ manifest_include(
   'xt/lib' => '.pm',
   '' => '.PL',
   '' => qr{Changes|MANIFEST|README|META\.yml},
+  '' => qr{t/smells-of-vcs/.svn},
   'maint' => qr{[^.].*},
 );
 

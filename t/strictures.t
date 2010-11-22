@@ -28,6 +28,7 @@ foreach my $idx (0 .. $#us) {
 {
   local $0 = 't/00load.t';
   sub Foo::new { 1 }
+  chdir("t/smells-of-vcs");
   my $r = eval q{
     use strictures 1;
     new Foo 1, 2, 3;
