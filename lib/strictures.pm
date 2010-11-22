@@ -69,6 +69,9 @@ Note that _EXTRA may at some point add even more tests, with only a minor
 version increase, but any changes to the effect of 'use strictures' in
 normal mode will involve a major version bump.
 
+Be aware: THIS MEANS INDIRECT IS REQUIRED FOR AUTHORS OF STRICTURES USING
+CODE - but not by end users thereof.
+
 =head1 DESCRIPTION
 
 I've been writing the equivalent of this module at the top of my code for
