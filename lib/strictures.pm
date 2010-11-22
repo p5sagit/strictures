@@ -3,7 +3,7 @@ package strictures;
 use strict;
 use warnings FATAL => 'all';
 
-our $VERSION = '1.000000'; # 1.0.0
+our $VERSION = '1.001000'; # 1.1.0
 
 sub VERSION {
   for ($_[1]) {
@@ -20,7 +20,8 @@ sub import {
     if (exists $ENV{PERL_STRICTURES_EXTRA}) {
       $ENV{PERL_STRICTURES_EXTRA}
     } else {
-      !!($0 =~ /^x?t\/.*(?:load|compile|coverage).*\.t$/)
+      !!($0 =~ /^x?t\/.*(?:load|compile|coverage|use_ok).*\.t$/
+         and (-e '.git' or -e '.svn'))
     }
   };
   if ($do_indirect) {
@@ -50,10 +51,11 @@ is equivalent to
 
 except when called from a file where $0 matches:
 
-  /^x?t\/.*(?:load|compile|coverage).*\.t$/
+  /^x?t\/.*(?:load|compile|coverage|use_ok).*\.t$/
 
-or when the PERL_STRICTURES_EXTRA environment variable is set, in which
-case
+and when either '.git' or '.svn' is present in the current directory (with
+the intention of only forcing extra tests on the author side) - or when the
+PERL_STRICTURES_EXTRA environment variable is set, in which case
 
   use strictures 1;
 
