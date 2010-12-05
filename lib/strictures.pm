@@ -3,13 +3,19 @@ package strictures;
 use strict;
 use warnings FATAL => 'all';
 
-our $VERSION = '1.001000'; # 1.1.0
+our $VERSION = '1.001001'; # 1.1.1
 
 sub VERSION {
   for ($_[1]) {
     last unless defined && !ref && int != 1;
     die "Major version specified as $_ - this is strictures version 1";
   }
+  # disable this since Foo->VERSION(undef) correctly returns the version
+  # and that can happen either if our caller passes undef explicitly or
+  # because the for above autovivified $_[1] - I could make it stop but
+  # it's pointless since we don't want to blow up if the caller does
+  # something valid either.
+  no warnings 'uninitialized';
   shift->SUPER::VERSION(@_);
 }
 
@@ -28,7 +34,11 @@ sub import {
     if (eval { require indirect; 1 }) {
       indirect->unimport(':fatal');
     } else {
-      die "strictures.pm extra testing active but couldn't load indirect.pm: $@";
+      die "strictures.pm extra testing active but couldn't load indirect.pm
+Extra testing is auto-enabled in checkouts only, so if you're the author
+of a strictures using module you should 'cpan indirect' but the module
+is not required by your users.
+Error loading indirect.pm was: $@";
     }
   }
 }
