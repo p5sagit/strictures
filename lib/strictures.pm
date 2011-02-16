@@ -22,7 +22,7 @@ sub VERSION {
 sub import {
   strict->import;
   warnings->import(FATAL => 'all');
-  my $do_indirect = do {
+  my $extra_tests = do {
     if (exists $ENV{PERL_STRICTURES_EXTRA}) {
       $ENV{PERL_STRICTURES_EXTRA}
     } else {
@@ -30,15 +30,26 @@ sub import {
          and (-e '.git' or -e '.svn'))
     }
   };
-  if ($do_indirect) {
-    if (eval { require indirect; 1 }) {
+  if ($extra_tests) {
+    if (eval {
+          require indirect;
+          require multidimensional;
+          require bareword::filehandles;
+          1
+        }) {
       indirect->unimport(':fatal');
+      multidimensional->unimport;
+      bareword::filehandles->unimport;
     } else {
-      die "strictures.pm extra testing active but couldn't load indirect.pm
+      die "strictures.pm extra testing active but couldn't load modules.
 Extra testing is auto-enabled in checkouts only, so if you're the author
-of a strictures using module you should 'cpan indirect' but the module
-is not required by your users.
-Error loading indirect.pm was: $@";
+of a strictures using module you need to run:
+
+  cpan indirect multidimensional bareword::filehandles
+
+but these modules are not required by your users.
+
+Error loading modules was: $@";
     }
   }
 }
@@ -74,13 +85,15 @@ is equivalent to
   use strict;
   use warnings FATAL => 'all';
   no indirect 'fatal';
+  no multidimensional;
+  no bareword::filehandles;
 
 Note that _EXTRA may at some point add even more tests, with only a minor
 version increase, but any changes to the effect of 'use strictures' in
 normal mode will involve a major version bump.
 
-Be aware: THIS MEANS INDIRECT IS REQUIRED FOR AUTHORS OF STRICTURES USING
-CODE - but not by end users thereof.
+Be aware: THIS MEANS THE EXTRA TEST MODULES ARE REQUIRED FOR AUTHORS OF
+STRICTURES USING CODE - but not by end users thereof.
 
 =head1 DESCRIPTION
 
