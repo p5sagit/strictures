@@ -7,7 +7,4 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
   NAME => 'strictures',
   VERSION_FROM => 'lib/strictures.pm',
-  ABSTRACT_FROM => 'lib/strictures.pm',
-  AUTHOR => 'Matt S Trout <mst@shadowcat.co.uk>',
-  LICENSE => 'perl',
 );

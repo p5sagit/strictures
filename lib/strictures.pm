@@ -161,7 +161,7 @@ Gitweb is on http://git.shadowcat.co.uk/ and the clone URL is:
 
 =head1 AUTHOR
 
-Matt S. Trout <mst@shadowcat.co.uk>
+mst - Matt S. Trout (cpan:MSTROUT) <mst@shadowcat.co.uk>
 
 =head1 CONTRIBUTORS
 
