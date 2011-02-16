@@ -1,3 +1,4 @@
+1.002000 - 2011-02-16
   - add multidimensional and bareword::filehandles in author mode
 1.1.1 Dec 05 2010
   - disable uninitialized warnings before calling ->SUPER::VERSION
