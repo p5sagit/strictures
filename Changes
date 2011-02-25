@@ -1,3 +1,4 @@
+1.002001 - 2011-02-25
   - switch .svn to .git in smells-of-vcs test and create it ourselves
     to ease importing of this dist into subversion repositories
 1.002000 - 2011-02-16
