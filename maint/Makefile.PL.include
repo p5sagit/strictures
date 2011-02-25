@@ -3,5 +3,5 @@ use Distar;
 author 'mst - Matt S. Trout (cpan:MSTROUT) <mst@shadowcat.co.uk>';
 
 manifest_include(
-  '' => qr{t/smells-of-vcs/.svn},
+  '' => qr{t/smells-of-vcs/.exists},
 );

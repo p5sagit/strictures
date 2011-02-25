@@ -1,3 +1,5 @@
+mkdir('t/smells-of-vcs/.git') or die "Couldn't create fake .git: $!";
+
 use Test::More qw(no_plan);
 
 our (@us, @expect);
