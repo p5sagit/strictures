@@ -1,3 +1,4 @@
+1.002002 - 2011-02-25
   - only try and mkdir the .git if it doesn't already exist so repeated
     test runs don't explode
 1.002001 - 2011-02-25
