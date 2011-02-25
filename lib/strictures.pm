@@ -116,7 +116,7 @@ cost of blowing things up on another machine.
 
 Therefore, strictures turns on indirect checking only when it thinks it's
 running in a compilation (or pod coverage) test - though if this causes
-undesired behaviour this can be overriden by setting the
+undesired behaviour this can be overridden by setting the
 PERL_STRICTURES_EXTRA environment variable.
 
 If additional useful author side checks come to mind, I'll add them to the
