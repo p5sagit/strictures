@@ -3,6 +3,8 @@ package strictures;
 use strict;
 use warnings FATAL => 'all';
 
+use constant _PERL_LT_5_8_4 => ($] < 5.008004) ? 1 : 0;
+
 our $VERSION = '1.002002'; # 1.2.2
 
 sub VERSION {
@@ -22,10 +24,15 @@ sub VERSION {
 sub import {
   strict->import;
   warnings->import(FATAL => 'all');
+
   my $extra_tests = do {
     if (exists $ENV{PERL_STRICTURES_EXTRA}) {
-      $ENV{PERL_STRICTURES_EXTRA}
-    } else {
+      if (_PERL_LT_5_8_4 and $ENV{PERL_STRICTURES_EXTRA}) {
+        die 'PERL_STRICTUTRES_EXTRA checks are not available on perls older than 5.8.4, '
+          . "please unset \$ENV{PERL_STRICTURES_EXTRA}\n";
+      }
+      $ENV{PERL_STRICTURES_EXTRA};
+    } elsif (! _PERL_LT_5_8_4) {
       !!($0 =~ /^x?t\/.*(?:load|compile|coverage|use_ok).*\.t$/
          and (-e '.git' or -e '.svn'))
     }
@@ -41,7 +48,8 @@ sub import {
       multidimensional->unimport;
       bareword::filehandles->unimport;
     } else {
-      die "strictures.pm extra testing active but couldn't load modules.
+      die <<EOE;
+strictures.pm extra testing active but couldn't load modules.
 Extra testing is auto-enabled in checkouts only, so if you're the author
 of a strictures using module you need to run:
 
@@ -49,7 +57,8 @@ of a strictures using module you need to run:
 
 but these modules are not required by your users.
 
-Error loading modules was: $@";
+Error loading modules was: $@
+EOE
     }
   }
 }

@@ -30,7 +30,9 @@ foreach my $idx (0 .. $#us) {
   is($us[$idx][1], $expect[$idx][1], 'Warnings ok for case '.($idx+1));
 }
 
-{
+SKIP: {
+  skip 'Extra tests disabled on perls <= 5.008003', 1
+    if $] < 5.008004;
   local $0 = 't/00load.t';
   sub Foo::new { 1 }
   chdir("t/smells-of-vcs");
