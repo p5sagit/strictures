@@ -1,3 +1,4 @@
+  - defatalize lack of extra testing modules
   - disable extra tests on perls <= 5.008003, things do not work there as
     expected
 1.002002 - 2011-02-25

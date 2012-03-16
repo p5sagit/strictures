@@ -21,6 +21,8 @@ sub VERSION {
   shift->SUPER::VERSION(@_);
 }
 
+my $extras_load_warned;
+
 sub import {
   strict->import;
   warnings->import(FATAL => 'all');
@@ -38,26 +40,35 @@ sub import {
     }
   };
   if ($extra_tests) {
-    if (eval {
-          require indirect;
-          require multidimensional;
-          require bareword::filehandles;
-          1
-        }) {
+    my @failed;
+    if (eval { require indirect; 1 }) {
       indirect->unimport(':fatal');
+    } else {
+      push @failed, 'indirect';
+    }
+    if (eval { require multidimensional; 1 }) {
       multidimensional->unimport;
+    } else {
+      push @failed, 'multidimensional';
+    }
+    if (eval { require bareword::filehandles; 1 }) {
       bareword::filehandles->unimport;
     } else {
-      die <<EOE;
-strictures.pm extra testing active but couldn't load modules.
+      push @failed, 'bareword::filehandles';
+    }
+    if (@failed and not $extras_load_warned++) {
+      my $failed = join ' ', @failed;
+      warn <<EOE;
+strictures.pm extra testing active but couldn't load all modules. Missing were:
+
+  $failed
+
 Extra testing is auto-enabled in checkouts only, so if you're the author
 of a strictures using module you need to run:
 
   cpan indirect multidimensional bareword::filehandles
 
 but these modules are not required by your users.
-
-Error loading modules was: $@
 EOE
     }
   }
@@ -101,8 +112,9 @@ Note that _EXTRA may at some point add even more tests, with only a minor
 version increase, but any changes to the effect of 'use strictures' in
 normal mode will involve a major version bump.
 
-Be aware: THIS MEANS THE EXTRA TEST MODULES ARE REQUIRED FOR AUTHORS OF
-STRICTURES USING CODE - but not by end users thereof.
+If any of the extra testing modules are not present, strictures will
+complain loudly, once, via warn(), and then shut up. But you really
+should consider installing them, they're all great anti-footgun tools.
 
 =head1 DESCRIPTION
 
