@@ -1,3 +1,4 @@
+  - try and run for any checkout t/ now we don't blow up the process
   - defatalize lack of extra testing modules
   - disable extra tests on perls <= 5.008003, things do not work there as
     expected

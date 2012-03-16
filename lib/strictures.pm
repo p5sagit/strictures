@@ -35,7 +35,7 @@ sub import {
       }
       $ENV{PERL_STRICTURES_EXTRA};
     } elsif (! _PERL_LT_5_8_4) {
-      !!($0 =~ /^x?t\/.*(?:load|compile|coverage|use_ok).*\.t$/
+      !!($0 =~ /^x?t\/.*\.t$/
          and (-e '.git' or -e '.svn'))
     }
   };
@@ -92,7 +92,7 @@ is equivalent to
 
 except when called from a file where $0 matches:
 
-  /^x?t\/.*(?:load|compile|coverage|use_ok).*\.t$/
+  /^x?t\/.*\.t$/
 
 and when either '.git' or '.svn' is present in the current directory (with
 the intention of only forcing extra tests on the author side) - or when the
@@ -135,8 +135,8 @@ syntax (and not so obvious mistakes that cause things to accidentally compile
 as such) get caught, but not at the cost of an XS dependency and not at the
 cost of blowing things up on another machine.
 
-Therefore, strictures turns on indirect checking only when it thinks it's
-running in a compilation (or pod coverage) test - though if this causes
+Therefore, strictures turns on additional checking, but only when it thinks
+it's running in a test file in a VCS checkout - though if this causes
 undesired behaviour this can be overridden by setting the
 PERL_STRICTURES_EXTRA environment variable.
 
