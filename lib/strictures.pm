@@ -5,7 +5,7 @@ use warnings FATAL => 'all';
 
 use constant _PERL_LT_5_8_4 => ($] < 5.008004) ? 1 : 0;
 
-our $VERSION = '1.003000'; # 1.3.0
+our $VERSION = '1.003001'; # 1.3.1
 
 sub VERSION {
   for ($_[1]) {
