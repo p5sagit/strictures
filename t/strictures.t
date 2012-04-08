@@ -33,6 +33,13 @@ foreach my $idx (0 .. $#us) {
 SKIP: {
   skip 'Extra tests disabled on perls <= 5.008003', 1
     if $] < 5.008004;
+  skip 'Not got all the modules to do this', 1
+    unless eval {
+      require indirect;
+      require multidimensional;
+      require bareword::filehandles;
+      1;
+    };
   local $0 = 't/00load.t';
   sub Foo::new { 1 }
   chdir("t/smells-of-vcs");
