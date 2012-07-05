@@ -36,7 +36,8 @@ sub import {
       $ENV{PERL_STRICTURES_EXTRA};
     } elsif (! _PERL_LT_5_8_4) {
       !!($0 =~ /^x?t\/.*\.t$/
-         and (-e '.git' or -e '.svn'))
+         and (-e '.git' or -e '.svn')
+            and (caller eq 'main'))
     }
   };
   if ($extra_tests) {
