@@ -11,3 +11,6 @@ Distar/
 
 # yes that's right, distar makes it for us
 MANIFEST.SKIP
+
+#I might be a Mac
+\.DS_Store
