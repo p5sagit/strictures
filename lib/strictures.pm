@@ -98,8 +98,10 @@ except when called from a file which matches:
   (caller)[1] =~ /^(?:t|xt|lib|blib)/
 
 and when either '.git' or '.svn' is present in the current directory (with
-the intention of only forcing extra tests on the author side) - or when the
-PERL_STRICTURES_EXTRA environment variable is set, in which case
+the intention of only forcing extra tests on the author side) - or when '.git'
+or '.svn' is present two directories up along with 'dist.ini' (which would
+indicate we are in a 'dzil test' operation, via L<Dist::Zilla>) -
+or when the PERL_STRICTURES_EXTRA environment variable is set, in which case
 
   use strictures 1;
 
