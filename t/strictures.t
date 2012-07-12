@@ -47,7 +47,7 @@ SKIP: {
   sub Foo::new { 1 }
   chdir("t/smells-of-vcs");
   local $strictures::Smells_Like_VCS = 1;
-  foreach my $file (qw(lib/one.pm t/one.t)) {
+  foreach my $file (qw(lib/one.pm t/one.faket)) {
     ok(!eval { require $file; 1 }, "Failed to load ${file}");
     like($@, qr{Indirect call of method}, "Failed due to indirect.pm, ok");
   }
