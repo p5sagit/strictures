@@ -30,7 +30,7 @@ sub import {
   my $extra_tests = do {
     if (exists $ENV{PERL_STRICTURES_EXTRA}) {
       if (_PERL_LT_5_8_4 and $ENV{PERL_STRICTURES_EXTRA}) {
-        die 'PERL_STRICTUTRES_EXTRA checks are not available on perls older than 5.8.4, '
+        die 'PERL_STRICTURES_EXTRA checks are not available on perls older than 5.8.4: '
           . "please unset \$ENV{PERL_STRICTURES_EXTRA}\n";
       }
       $ENV{PERL_STRICTURES_EXTRA};
