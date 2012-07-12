@@ -23,6 +23,8 @@ sub VERSION {
 
 my $extras_load_warned;
 
+our $Smells_Like_VCS = -e '.git' || -e '.svn';
+
 sub import {
   strict->import;
   warnings->import(FATAL => 'all');
@@ -36,7 +38,7 @@ sub import {
       $ENV{PERL_STRICTURES_EXTRA};
     } elsif (! _PERL_LT_5_8_4) {
       !!((caller)[1] =~ /^(?:t|xt|lib|blib)/
-         and (-e '.git' or -e '.svn'))
+         and $Smells_Like_VCS)
     }
   };
   if ($extra_tests) {
