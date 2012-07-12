@@ -1,3 +1,4 @@
+1.004001 - 2012-07-12
   - test-specific strictures now enabled during 'dzil test'
 1.004000 - 2012-07-12
   - switch to testing calling file to avoid firing on dependencies
