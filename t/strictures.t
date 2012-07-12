@@ -1,3 +1,5 @@
+BEGIN { delete $ENV{PERL_STRICTURES_EXTRA} }
+
 # -e is sufficient here.
 -e 't/smells-of-vcs/.git'
   or mkdir('t/smells-of-vcs/.git')
@@ -13,8 +15,10 @@ sub capture_us { push @us, capture_stuff }
 sub capture_expect { push @expect, capture_stuff }
 
 {
+  BEGIN { $ENV{PERL_STRICTURES_EXTRA} = 0 }
   use strictures 1;
   BEGIN { capture_us }
+  BEGIN { delete $ENV{PERL_STRICTURES_EXTRA} }
 }
 
 {
@@ -40,16 +44,13 @@ SKIP: {
       require bareword::filehandles;
       1;
     };
-  local $0 = 't/00load.t';
   sub Foo::new { 1 }
   chdir("t/smells-of-vcs");
-  my $r = eval q{
-    use strictures 1;
-    new Foo 1, 2, 3;
-  };
-  # I don't test $@ here since if indirect isn't installed we hit one
-  # error and if it is we hit another; it's enough the code path's hit.
-  ok(!$r, 'strictures blows up for t/00load.t');
+  foreach my $file (qw(lib/one.pm t/one.t)) {
+    ok(!eval { require $file; 1 }, "Failed to load ${file}");
+    like($@, qr{Indirect call of method}, "Failed due to indirect.pm, ok");
+  }
+  ok(eval { require "other/one.pl"; 1 }, "Loaded other/one.pl ok");
 }
 
 ok(!eval q{use strictures 2; 1; }, "Can't use strictures 2 (this is version 1)");
