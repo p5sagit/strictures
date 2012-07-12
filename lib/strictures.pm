@@ -23,7 +23,8 @@ sub VERSION {
 
 my $extras_load_warned;
 
-our $Smells_Like_VCS = -e '.git' || -e '.svn';
+our $Smells_Like_VCS = (-e '.git' || -e '.svn'
+  || (-e '../../dist.ini' && (-e '../../.git' || -e '../../.svn')));
 
 sub import {
   strict->import;
