@@ -197,16 +197,16 @@ help. For example,
   foo { ... };
 
 where foo is an & prototyped sub that you forgot to import - this is
-pernicious to track down since all -seems- fine until it gets called
+pernicious to track down since all I<seems> fine until it gets called
 and you get a crash. Worse still, you can fail to have imported it due
 to a circular require, at which point you have a load order dependent
-bug which I've seen before now -only- show up in production due to tiny
+bug which I've seen before now I<only> show up in production due to tiny
 differences between the production and the development environment. I wrote
 L<http://shadow.cat/blog/matt-s-trout/indirect-but-still-fatal/> to explain
 this particular problem before L<strictures> itself existed.
 
 As such, in my experience so far the L<strictures> extra testing has
--avoided- production versus development differences, not caused them.
+I<avoided> production versus development differences, not caused them.
 
 Additionally, L<strictures>' policy is very much "try and provide as much
 protection as possible for newbies - who won't think about whether there's
