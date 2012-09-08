@@ -239,6 +239,10 @@ Gitweb is on http://git.shadowcat.co.uk/ and the clone URL is:
 
   git clone git://git.shadowcat.co.uk/p5sagit/strictures.git
 
+The web interface to the repository is at:
+
+  http://git.shadowcat.co.uk/gitweb/gitweb.cgi?p=p5sagit/strictures.git
+
 =head1 AUTHOR
 
 mst - Matt S. Trout (cpan:MSTROUT) <mst@shadowcat.co.uk>
