@@ -128,7 +128,7 @@ about a year now. I figured it was time to make it shorter.
 
 Things like the importer in C<use Moose> don't help me because they turn
 warnings on but don't make them fatal -- which from my point of view is
-useless because I want an exception to tell me my code isn't warnings clean.
+useless because I want an exception to tell me my code isn't warnings-clean.
 
 Any time I see a warning from my code, that indicates a mistake.
 
@@ -141,14 +141,14 @@ as such) get caught, but not at the cost of an XS dependency and not at the
 cost of blowing things up on another machine.
 
 Therefore, L<strictures> turns on additional checking, but only when it thinks
-it's running in a test file in a VCS checkout -- though if this causes
+it's running in a test file in a VCS checkout -- although if this causes
 undesired behaviour this can be overridden by setting the
 C<PERL_STRICTURES_EXTRA> environment variable.
 
 If additional useful author side checks come to mind, I'll add them to the
-C<PERL_STRICTURES_EXTRA> code path only -- this will result in a minor version increase (i.e.
+C<PERL_STRICTURES_EXTRA> code path only -- this will result in a minor version increase (e.g.
 1.000000 to 1.001000 (1.1.0) or similar). Any fixes only to the mechanism of
-this code will result in a subversion increas (i.e. 1.000000 to 1.000001
+this code will result in a sub-version increase (e.g. 1.000000 to 1.000001
 (1.0.1)).
 
 If the behaviour of C<use strictures> in normal mode changes in any way, that
@@ -184,7 +184,7 @@ productive conversation, here's my current rationale for turning the
 extra testing on via a heuristic:
 
 The extra testing is all stuff that only ever blows up at compile time;
-this is intentional. So the oft raised concern that it's different code being
+this is intentional. So the oft-raised concern that it's different code being
 tested is only sort of the case -- none of the modules involved affect the
 final optree to my knowledge, so the author gets some additional compile
 time crashes which he/she then fixes, and the rest of the testing is
@@ -205,7 +205,7 @@ differences between the production and the development environment. I wrote
 L<http://shadow.cat/blog/matt-s-trout/indirect-but-still-fatal/> to explain
 this particular problem before L<strictures> itself existed.
 
-As such, in my experience so far the L<strictures> extra testing has
+As such, in my experience so far L<strictures>' extra testing has
 I<avoided> production versus development differences, not caused them.
 
 Additionally, L<strictures>' policy is very much "try and provide as much
@@ -221,7 +221,7 @@ significantly over time, especially for 1.004 where we changed things to
 ensure it only fires on files in your checkout (rather than L<strictures>-using
 modules you happened to have installed, which was just silly). However, I
 hope the above clarifies why a heuristic approach is not only necessary but
-desirable from a POV of providing new users with as much safety as possible,
+desirable from a point of view of providing new users with as much safety as possible,
 and will allow any future discussion on the subject to focus on "how do we
 minimise annoyance to people deploying from checkouts intentionally".
 
