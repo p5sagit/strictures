@@ -98,9 +98,9 @@ except when called from a file which matches:
   (caller)[1] =~ /^(?:t|xt|lib|blib)/
 
 and when either C<.git> or C<.svn> is present in the current directory (with
-the intention of only forcing extra tests on the author side) - or when C<.git>
+the intention of only forcing extra tests on the author side) -- or when C<.git>
 or C<.svn> is present two directories up along with C<dist.ini> (which would
-indicate we are in a C<dzil test> operation, via L<Dist::Zilla>) -
+indicate we are in a C<dzil test> operation, via L<Dist::Zilla>) --
 or when the C<PERL_STRICTURES_EXTRA> environment variable is set, in which case
 
   use strictures 1;
@@ -127,12 +127,12 @@ I've been writing the equivalent of this module at the top of my code for
 about a year now. I figured it was time to make it shorter.
 
 Things like the importer in C<use Moose> don't help me because they turn
-warnings on but don't make them fatal - which from my point of view is
+warnings on but don't make them fatal -- which from my point of view is
 useless because I want an exception to tell me my code isn't warnings clean.
 
 Any time I see a warning from my code, that indicates a mistake.
 
-Any time my code encounters a mistake, I want a crash - not spew to STDERR
+Any time my code encounters a mistake, I want a crash -- not spew to STDERR
 and then unknown (and probably undesired) subsequent behaviour.
 
 I also want to ensure that obvious coding mistakes, like indirect object
@@ -141,18 +141,18 @@ as such) get caught, but not at the cost of an XS dependency and not at the
 cost of blowing things up on another machine.
 
 Therefore, L<strictures> turns on additional checking, but only when it thinks
-it's running in a test file in a VCS checkout - though if this causes
+it's running in a test file in a VCS checkout -- though if this causes
 undesired behaviour this can be overridden by setting the
 C<PERL_STRICTURES_EXTRA> environment variable.
 
 If additional useful author side checks come to mind, I'll add them to the
-C<PERL_STRICTURES_EXTRA> code path only - this will result in a minor version increase (i.e.
+C<PERL_STRICTURES_EXTRA> code path only -- this will result in a minor version increase (i.e.
 1.000000 to 1.001000 (1.1.0) or similar). Any fixes only to the mechanism of
 this code will result in a subversion increas (i.e. 1.000000 to 1.000001
 (1.0.1)).
 
 If the behaviour of C<use strictures> in normal mode changes in any way, that
-will constitute a major version increase - and the code already checks
+will constitute a major version increase -- and the code already checks
 when its version is tested to ensure that
 
   use strictures 1;
@@ -174,7 +174,7 @@ with a version number on it and does the version check.
 =head1 EXTRA TESTING RATIONALE
 
 Every so often, somebody complains that they're deploying via C<git pull>
-and that they don't want L<strictures> to enable itself in this case - and that
+and that they don't want L<strictures> to enable itself in this case -- and that
 setting C<PERL_STRICTURES_EXTRA> to 0 isn't acceptable (additional ways to
 disable extra testing would be welcome but the discussion never seems to get
 that far).
@@ -185,18 +185,18 @@ extra testing on via a heuristic:
 
 The extra testing is all stuff that only ever blows up at compile time;
 this is intentional. So the oft raised concern that it's different code being
-tested is only sort of the case - none of the modules involved affect the
+tested is only sort of the case -- none of the modules involved affect the
 final optree to my knowledge, so the author gets some additional compile
 time crashes which he/she then fixes, and the rest of the testing is
 completely valid for all environments.
 
-The point of the extra testing - especially C<no indirect> - is to catch
+The point of the extra testing -- especially C<no indirect> -- is to catch
 mistakes that newbie users won't even realise are mistakes without
 help. For example,
 
   foo { ... };
 
-where foo is an & prototyped sub that you forgot to import - this is
+where foo is an & prototyped sub that you forgot to import -- this is
 pernicious to track down since all I<seems> fine until it gets called
 and you get a crash. Worse still, you can fail to have imported it due
 to a circular require, at which point you have a load order dependent
@@ -209,14 +209,14 @@ As such, in my experience so far the L<strictures> extra testing has
 I<avoided> production versus development differences, not caused them.
 
 Additionally, L<strictures>' policy is very much "try and provide as much
-protection as possible for newbies - who won't think about whether there's
-an option to turn on or not" - so having only the environment variable
+protection as possible for newbies -- who won't think about whether there's
+an option to turn on or not" -- so having only the environment variable
 is not sufficient to achieve that (I get to explain that you need to add
-C<use strict> at least once a week on freenode #perl - newbies sometimes
+C<use strict> at least once a week on freenode #perl -- newbies sometimes
 completely skip steps because they don't understand that that step
 is important).
 
-I make no claims that the heuristic is perfect - it's already been evolved
+I make no claims that the heuristic is perfect -- it's already been evolved
 significantly over time, especially for 1.004 where we changed things to
 ensure it only fires on files in your checkout (rather than L<strictures>-using
 modules you happened to have installed, which was just silly). However, I
