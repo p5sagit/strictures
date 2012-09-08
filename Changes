@@ -1,3 +1,4 @@
+  - add better rationale for the extra testing heuristic
 1.004001 - 2012-07-12
   - test-specific strictures now enabled during 'dzil test'
 1.004000 - 2012-07-12
