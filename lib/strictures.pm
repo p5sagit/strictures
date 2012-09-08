@@ -117,7 +117,7 @@ Note that C<PERL_STRICTURES_EXTRA> may at some point add even more tests, with o
 version increase, but any changes to the effect of C<use strictures> in
 normal mode will involve a major version bump.
 
-If any of the extra testing modules are not present, strictures will
+If any of the extra testing modules are not present, L<strictures> will
 complain loudly, once, via C<warn()>, and then shut up. But you really
 should consider installing them, they're all great anti-footgun tools.
 
@@ -140,7 +140,7 @@ syntax (and not so obvious mistakes that cause things to accidentally compile
 as such) get caught, but not at the cost of an XS dependency and not at the
 cost of blowing things up on another machine.
 
-Therefore, strictures turns on additional checking, but only when it thinks
+Therefore, L<strictures> turns on additional checking, but only when it thinks
 it's running in a test file in a VCS checkout - though if this causes
 undesired behaviour this can be overridden by setting the
 C<PERL_STRICTURES_EXTRA> environment variable.
@@ -174,7 +174,7 @@ with a version number on it and does the version check.
 =head1 EXTRA TESTING RATIONALE
 
 Every so often, somebody complains that they're deploying via C<git pull>
-and that they don't want strictures to enable itself in this case - and that
+and that they don't want L<strictures> to enable itself in this case - and that
 setting C<PERL_STRICTURES_EXTRA> to 0 isn't acceptable (additional ways to
 disable extra testing would be welcome but the discussion never seems to get
 that far).
@@ -205,10 +205,10 @@ differences between the production and the development environment. I wrote
 L<http://shadow.cat/blog/matt-s-trout/indirect-but-still-fatal/> to explain
 this particular problem before L<strictures> itself existed.
 
-As such, in my experience so far the strictures extra testing has
+As such, in my experience so far the L<strictures> extra testing has
 -avoided- production versus development differences, not caused them.
 
-Additionally, strictures' policy is very much "try and provide as much
+Additionally, L<strictures>' policy is very much "try and provide as much
 protection as possible for newbies - who won't think about whether there's
 an option to turn on or not" - so having only the environment variable
 is not sufficient to achieve that (I get to explain that you need to add
@@ -218,7 +218,7 @@ is important).
 
 I make no claims that the heuristic is perfect - it's already been evolved
 significantly over time, especially for 1.004 where we changed things to
-ensure it only fires on files in your checkout (rather than strictures-using
+ensure it only fires on files in your checkout (rather than L<strictures>-using
 modules you happened to have installed, which was just silly). However, I
 hope the above clarifies why a heuristic approach is not only necessary but
 desirable from a POV of providing new users with as much safety as possible,
