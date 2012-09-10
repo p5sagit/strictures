@@ -67,7 +67,7 @@ strictures.pm extra testing active but couldn't load all modules. Missing were:
   $failed
 
 Extra testing is auto-enabled in checkouts only, so if you're the author
-of a strictures using module you need to run:
+of a strictures-using module you need to run:
 
   cpan indirect multidimensional bareword::filehandles
 
