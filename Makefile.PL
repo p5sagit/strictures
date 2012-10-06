@@ -36,4 +36,13 @@ WriteMakefile(
       },
     },
   },
+
+  (eval { require ExtUtils::CBuilder; 1 }
+      and ExtUtils::CBuilder->new->have_compiler)
+      ? (PREREQ_PM => {
+            indirect => 0,
+            multidimensional => 0,
+            'bareword::filehandles' => 0,
+      })
+      : (),
 );
