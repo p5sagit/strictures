@@ -8,11 +8,17 @@ WriteMakefile(
   NAME => 'strictures',
   VERSION_FROM => 'lib/strictures.pm',
 
-  META_ADD => {
+  META_MERGE => {
     resources => {
       # r/w: p5sagit@git.shadowcat.co.uk:strictures.git
       repository => 'git://git.shadowcat.co.uk/p5sagit/strictures.git',
       homepage => 'http://git.shadowcat.co.uk/gitweb/gitweb.cgi?p=p5sagit/strictures.git',
+    },
+
+    recommends => {
+        indirect => 0,
+        multidimensional => 0,
+        'bareword::filehandles' => 0,
     },
   },
 );
