@@ -9,6 +9,8 @@ WriteMakefile(
   VERSION_FROM => 'lib/strictures.pm',
 
   META_MERGE => {
+    dynamic_config => 0,
+
     resources => {
       # r/w: p5sagit@git.shadowcat.co.uk:strictures.git
       repository => 'git://git.shadowcat.co.uk/p5sagit/strictures.git',

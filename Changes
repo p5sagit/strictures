@@ -1,4 +1,5 @@
   - check only once for presence of extra testing prereqs
+  - explicitly specify no dynamic_config in META
 1.004002 - 2012-09-08
   - add better rationale for the extra testing heuristic
 1.004001 - 2012-07-12
