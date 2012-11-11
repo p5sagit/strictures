@@ -1,3 +1,4 @@
+  - fix 5.16 crash due to qw() list being readonly
 1.004003 - 2012-11-10
   - check only once for presence of extra testing prereqs
   - explicitly specify no dynamic_config in META
