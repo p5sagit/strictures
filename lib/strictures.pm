@@ -21,7 +21,7 @@ sub VERSION {
   shift->SUPER::VERSION(@_);
 }
 
-my $extra_load_states;
+our $extra_load_states;
 
 our $Smells_Like_VCS = (-e '.git' || -e '.svn'
   || (-e '../../dist.ini' && (-e '../../.git' || -e '../../.svn')));
