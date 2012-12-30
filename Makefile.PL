@@ -7,6 +7,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
   NAME => 'strictures',
   VERSION_FROM => 'lib/strictures.pm',
+  MIN_PERL_VERSION => '5.006',
 
   META_MERGE => {
     dynamic_config => 0,
