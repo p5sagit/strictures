@@ -11,16 +11,14 @@ our $VERSION = '1.005006';
 $VERSION = eval $VERSION;
 
 sub VERSION {
-  my ($class, $version) = @_;
-  for ($version) {
-    last unless defined && !ref && int != 1;
-    die "Major version specified as $_ - this is strictures version 1";
+  no warnings;
+  local $@;
+  if (defined $_[1] && eval { $_[0]->UNIVERSAL::VERSION($_[1]); 1}) {
+    $^H |= 0x20000
+      unless _PERL_LT_5_8_4;
+    $^H{strictures_enable} = int $_[1];
   }
-  # passing undef here may either warn or die depending on the version of perl.
-  # we can't match the caller's warning state in this case, so just disable the
-  # warning.
-  no warnings 'uninitialized';
-  shift->SUPER::VERSION(@_);
+  goto &UNIVERSAL::VERSION;
 }
 
 our $extra_load_states;
@@ -28,6 +26,29 @@ our $extra_load_states;
 our $Smells_Like_VCS;
 
 sub import {
+  my $class = shift;
+  my %opts = ref $_[0] ? %{$_[0]} : @_;
+  if (!exists $opts{version}) {
+    $opts{version}
+      = exists $^H{strictures_enable} ? delete $^H{strictures_enable}
+      : int $VERSION;
+  }
+  $class->_enable(\%opts);
+}
+
+sub _enable {
+  my ($class, $opts) = @_;
+  my $version = $opts->{version};
+  $version = 'undef'
+    if !defined $version;
+  my $method = "_enable_$version";
+  if (!$class->can($method)) {
+    die "Major version specified as $version - not supported!";
+  }
+  $class->$method($opts);
+}
+
+sub _enable_1 {
   strict->import;
   warnings->import(FATAL => 'all');
 
@@ -39,7 +60,7 @@ sub import {
       }
       $ENV{PERL_STRICTURES_EXTRA};
     } elsif (! _PERL_LT_5_8_4) {
-      (caller)[1] =~ /^(?:t|xt|lib|blib)[\\\/]/
+      (caller(3))[1] =~ /^(?:t|xt|lib|blib)[\\\/]/
         and defined $Smells_Like_VCS ? $Smells_Like_VCS
           : ( $Smells_Like_VCS = !!(
             -e '.git' || -e '.svn' || -e '.hg'

@@ -25,6 +25,8 @@ sub capture_expect { push @expect, capture_stuff }
 # I'm assuming here we'll have more cases later. maybe not. eh.
 
 foreach my $idx (0 .. $#us) {
+  # ignore lexicalized hints
+  $us[$idx][0] &= ~ 0x20000;
   is($us[$idx][0], $expect[$idx][0], 'Hints ok for case '.($idx+1));
   is($us[$idx][1], $expect[$idx][1], 'Warnings ok for case '.($idx+1));
 }
