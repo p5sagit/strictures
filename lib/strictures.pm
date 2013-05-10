@@ -30,6 +30,16 @@ sub import {
   strict->import;
   warnings->import(FATAL => 'all');
 
+  my $caller_file;
+  my $depth = 0;
+  while (my @caller = caller(++$depth)) {
+    if ($caller[3] =~ /::BEGIN$/) {
+      # older perls report the BEGIN in the wrong file
+      $caller_file = $depth > 1 ? (caller($depth-1))[1] : $caller[1];
+      $caller_file = $caller[1];
+    }
+  }
+
   my $extra_tests = do {
     if (exists $ENV{PERL_STRICTURES_EXTRA}) {
       if (_PERL_LT_5_8_4 and $ENV{PERL_STRICTURES_EXTRA}) {
@@ -38,7 +48,7 @@ sub import {
       }
       $ENV{PERL_STRICTURES_EXTRA};
     } elsif (! _PERL_LT_5_8_4) {
-      !!((caller)[1] =~ /^(?:t|xt|lib|blib)/
+      !!($caller_file =~ /^(?:t|xt|lib|blib)/
          and $Smells_Like_VCS)
     }
   };
