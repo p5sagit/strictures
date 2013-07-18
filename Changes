@@ -1,33 +1,47 @@
-1.004004 - 2012-11-12
+Release history for strictures
+
+1.004004   2012-11-12
   - fix crash in 1.004003 due to qw() list being readonly
-1.004003 - 2012-11-10
+
+1.004003   2012-11-10
   - check only once for presence of extra testing prereqs
   - explicitly specify no dynamic_config in META
-1.004002 - 2012-09-08
+
+1.004002   2012-09-08
   - add better rationale for the extra testing heuristic
-1.004001 - 2012-07-12
+
+1.004001   2012-07-12
   - test-specific strictures now enabled during 'dzil test'
-1.004000 - 2012-07-12
+
+1.004000   2012-07-12
   - switch to testing calling file to avoid firing on dependencies
-1.003001 - 2012-04-08
+
+1.003001   2012-04-08
   - fix test to handle defatalization
-1.003000 - 2012-04-07
+
+1.003000   2012-04-07
   - try and run for any checkout t/ now we don't blow up the process
   - defatalize lack of extra testing modules
   - disable extra tests on perls <= 5.008003, things do not work there as
     expected
-1.002002 - 2011-02-25
+
+1.002002   2011-02-25
   - only try and mkdir the .git if it doesn't already exist so repeated
     test runs don't explode
-1.002001 - 2011-02-25
+
+1.002001   2011-02-25
   - switch .svn to .git in smells-of-vcs test and create it ourselves
     to ease importing of this dist into subversion repositories
-1.002000 - 2011-02-16
+
+1.002000   2011-02-16
   - add multidimensional and bareword::filehandles in author mode
-1.1.1 Dec 05 2010
+
+1.1.1   2010-12-05
   - disable uninitialized warnings before calling ->SUPER::VERSION
-1.1.0 Nov 22 2010
+
+1.1.0   2010-11-22
   - enable extra testing only if .git or .svn present to keep requirement
     for extra modules author-side
-1.0.0 Jul 18 2010
+
+1.0.0   2010-07-18
   - initial release
