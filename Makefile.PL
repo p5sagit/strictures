@@ -15,8 +15,15 @@ WriteMakefile(
 
     resources => {
       # r/w: p5sagit@git.shadowcat.co.uk:strictures.git
-      repository => 'git://git.shadowcat.co.uk/p5sagit/strictures.git',
-      homepage => 'http://git.shadowcat.co.uk/gitweb/gitweb.cgi?p=p5sagit/strictures.git',
+      repository => {
+        url => 'git://git.shadowcat.co.uk/p5sagit/strictures.git',
+        web => 'http://git.shadowcat.co.uk/gitweb/gitweb.cgi?p=p5sagit/strictures.git',
+        type => 'git',
+      },
+      bugtracker => {
+          mailto => 'bug-strictures@rt.cpan.org',
+          web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=strictures',
+      },
     },
 
     recommends => {
