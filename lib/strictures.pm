@@ -256,7 +256,7 @@ mst - Matt S. Trout (cpan:MSTROUT) <mst@shadowcat.co.uk>
 
 =head1 CONTRIBUTORS
 
-None required yet. Maybe this module is perfect (hahahahaha ...).
+Karen Etheridge (cpan:ETHER) <ether@cpan.org>
 
 =head1 COPYRIGHT
 
