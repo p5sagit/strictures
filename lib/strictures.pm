@@ -258,6 +258,8 @@ mst - Matt S. Trout (cpan:MSTROUT) <mst@shadowcat.co.uk>
 
 Karen Etheridge (cpan:ETHER) <ether@cpan.org>
 
+Mithaldu - Christian Walde (cpan:MITHALDU) <walde.christian@gmail.com>
+
 =head1 COPYRIGHT
 
 Copyright (c) 2010 the strictures L</AUTHOR> and L</CONTRIBUTORS>
