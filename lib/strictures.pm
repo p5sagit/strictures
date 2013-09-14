@@ -25,8 +25,9 @@ sub VERSION {
 
 our $extra_load_states;
 
-our $Smells_Like_VCS = (-e '.git' || -e '.svn'
-  || (-e '../../dist.ini' && (-e '../../.git' || -e '../../.svn')));
+our $Smells_Like_VCS = (-e '.git' || -e '.svn' || -e '.hg'
+  || (-e '../../dist.ini'
+      && (-e '../../.git' || -e '../../.svn' || -e '../../.hg' )));
 
 sub import {
   strict->import;
@@ -106,9 +107,9 @@ except when called from a file which matches:
 
   (caller)[1] =~ /^(?:t|xt|lib|blib)/
 
-and when either C<.git> or C<.svn> is present in the current directory (with
-the intention of only forcing extra tests on the author side) -- or when C<.git>
-or C<.svn> is present two directories up along with C<dist.ini> (which would
+and when either C<.git>, C<.svn>, or C<.hg> is present in the current directory (with
+the intention of only forcing extra tests on the author side) -- or when C<.git>,
+C<.svn>, or C<.hg> is present two directories up along with C<dist.ini> (which would
 indicate we are in a C<dzil test> operation, via L<Dist::Zilla>) --
 or when the C<PERL_STRICTURES_EXTRA> environment variable is set, in which case
 
