@@ -235,6 +235,24 @@ desirable from a point of view of providing new users with as much safety as pos
 and will allow any future discussion on the subject to focus on "how do we
 minimise annoyance to people deploying from checkouts intentionally".
 
+=head1 SEE ALSO
+
+=over 4
+
+=item *
+
+L<indirect>
+
+=item *
+
+L<multidimensional>
+
+=item *
+
+L<bareword::filehandles>
+
+=back
+
 =head1 COMMUNITY AND SUPPORT
 
 =head2 IRC channel
