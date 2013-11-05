@@ -26,10 +26,14 @@ WriteMakefile(
       },
     },
 
-    recommends => {
-        indirect => 0,
-        multidimensional => 0,
-        'bareword::filehandles' => 0,
+    prereqs => {
+      runtime => {
+        recommends => {
+          indirect => 0,
+          multidimensional => 0,
+          'bareword::filehandles' => 0,
+        },
+      },
     },
   },
 );
