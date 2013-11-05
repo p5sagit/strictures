@@ -1,5 +1,9 @@
 Release history for strictures
 
+  - detect mercurial when checking for development trees
+  - avoid using constant.pm to save a bit of memory on older perls
+  - update to v2 metadata
+
 1.004004   2012-11-12
   - fix crash in 1.004003 due to qw() list being readonly
 
