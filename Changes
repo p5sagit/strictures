@@ -1,5 +1,6 @@
 Release history for strictures
 
+1.005000   2013-11-05
   - detect mercurial when checking for development trees
   - avoid using constant.pm to save a bit of memory on older perls
   - update to v2 metadata
