@@ -57,7 +57,7 @@ SKIP: {
 
 ok(!eval q{use strictures 2; 1; }, "Can't use strictures 2 (this is version 1)");
 
-{
+SKIP: {
   skip 'Extra tests disabled on perls <= 5.008003', 1
     if $] < 5.008004;
   local $ENV{PERL_STRICTURES_EXTRA} = 1;
