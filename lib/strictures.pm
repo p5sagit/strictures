@@ -7,7 +7,7 @@ BEGIN {
   *_PERL_LT_5_8_4 = ($] < 5.008004) ? sub(){1} : sub(){0};
 }
 
-our $VERSION = '1.005000'; # 1.5.0
+our $VERSION = '1.005001'; # 1.5.1
 
 sub VERSION {
   for ($_[1]) {
