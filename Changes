@@ -1,5 +1,6 @@
 Release history for strictures
 
+1.005001   2013-11-07
   - fix skip on old perl on test script
 
 1.005000   2013-11-05
