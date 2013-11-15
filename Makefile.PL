@@ -11,7 +11,7 @@ WriteMakefile(
 
   META_MERGE => {
     'meta-spec' => { version => 2 },
-    dynamic_config => 0,
+    dynamic_config => 1,
 
     resources => {
       # r/w: p5sagit@git.shadowcat.co.uk:strictures.git
@@ -32,6 +32,11 @@ WriteMakefile(
           indirect => 0,
           multidimensional => 0,
           'bareword::filehandles' => 0,
+        },
+      },
+      configure => {
+        requires => {
+          'ExtUtils::CBuilder' => 0,
         },
       },
     },
