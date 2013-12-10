@@ -1,5 +1,8 @@
 Release history for strictures
 
+  - extra prereqs will be listed as hard prerequisites if a compiler is
+    available
+
 1.005001   2013-11-07
   - fix skip on old perl on test script
 
