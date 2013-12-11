@@ -1,5 +1,6 @@
 Release history for strictures
 
+1.005002   2013-12-10
   - extra prereqs will be listed as hard prerequisites if a compiler is
     available
 
