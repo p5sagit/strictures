@@ -9,8 +9,21 @@ my %extra_prereqs = (
   multidimensional => 0,
   'bareword::filehandles' => 0,
 );
+
+use Text::ParseWords;
+sub parse_args {
+  # copied from EUMM
+  ExtUtils::MakeMaker::parse_args(
+    my $tmp = {},
+    Text::ParseWords::shellwords($ENV{PERL_MM_OPT} || ''),
+    @ARGV,
+  );
+  return $tmp->{ARGS} || {};
+}
+
 my $have_compiler
-  = eval { require ExtUtils::CBuilder; 1 }
+  = ! parse_args()->{PUREPERL_ONLY}
+  &&  eval { require ExtUtils::CBuilder; 1 }
   && ExtUtils::CBuilder->new->have_compiler;
 
 WriteMakefile(
