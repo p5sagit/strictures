@@ -40,6 +40,14 @@ my $have_compiler
   = ! parse_args()->{PUREPERL_ONLY}
   && can_xs();
 
+my $support_configure_requires
+  = $ENV{PERL5_CPANM_IS_RUNNING}
+  || !$ENV{PERL5_CPAN_IS_RUNNING}
+  || ! eval { require CPAN }
+  || $CPAN::VERSION > 1.94_55
+  || $CPAN::VERSION > 1.91_51 && $CPAN::VERSION < 1.93_51;
+
+
 WriteMakefile(
   NAME => 'strictures',
   VERSION_FROM => 'lib/strictures.pm',
@@ -69,13 +77,13 @@ WriteMakefile(
         },
       },
       runtime => {
-        ( $] >= 5.008004 && !$have_compiler
+        ( $] >= 5.008004 && !($have_compiler && $support_configure_requires)
           ? ( recommends => \%extra_prereqs ) : () ),
       },
     },
   },
 
-  ($] >= 5.008004 && $have_compiler
+  ($] >= 5.008004 && $have_compiler && $support_configure_requires
     ? ( PREREQ_PM => \%extra_prereqs ) : () ),
 );
 
