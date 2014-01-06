@@ -33,6 +33,7 @@ sub import {
       = exists $^H{strictures_enable} ? delete $^H{strictures_enable}
       : int $VERSION;
   }
+  $opts{file} = (caller)[1];
   $class->_enable(\%opts);
 }
 
@@ -49,38 +50,44 @@ sub _enable {
 }
 
 sub _enable_1 {
+  my ($class, $opts) = @_;
   strict->import;
   warnings->import(FATAL => 'all');
 
-  _load_extras(qw(indirect multidimensional bareword::filehandles))
-    or return;
-  indirect->unimport(':fatal') if $extra_load_states{indirect};
-  multidimensional->unimport if $extra_load_states{multidimensional};
-  bareword::filehandles->unimport if $extra_load_states{'bareword::filehandles'};
+  if (_want_extra($opts->{file})) {
+    _load_extras(qw(indirect multidimensional bareword::filehandles));
+    indirect->unimport(':fatal')
+      if $extra_load_states{indirect};
+    multidimensional->unimport
+      if $extra_load_states{multidimensional};
+    bareword::filehandles->unimport
+      if $extra_load_states{'bareword::filehandles'};
+  }
+}
+
+sub _want_extra {
+  my $file = shift;
+  if (exists $ENV{PERL_STRICTURES_EXTRA}) {
+    if (_PERL_LT_5_8_4 and $ENV{PERL_STRICTURES_EXTRA}) {
+      die 'PERL_STRICTURES_EXTRA checks are not available on perls older'
+        . "than 5.8.4: please unset \$ENV{PERL_STRICTURES_EXTRA}\n";
+    }
+    return $ENV{PERL_STRICTURES_EXTRA};
+  }
+  return (
+    !_PERL_LT_5_8_4
+    and $file =~ /^(?:t|xt|lib|blib)[\\\/]/
+    and defined $Smells_Like_VCS ? $Smells_Like_VCS
+      : ( $Smells_Like_VCS = !!(
+        -e '.git' || -e '.svn' || -e '.hg'
+        || (-e '../../dist.ini'
+          && (-e '../../.git' || -e '../../.svn' || -e '../../.hg' ))
+      ))
+  );
 }
 
 sub _load_extras {
   my @extras = @_;
-  my $extra_tests = do {
-    if (exists $ENV{PERL_STRICTURES_EXTRA}) {
-      if (_PERL_LT_5_8_4 and $ENV{PERL_STRICTURES_EXTRA}) {
-        die 'PERL_STRICTURES_EXTRA checks are not available on perls older than 5.8.4: '
-          . "please unset \$ENV{PERL_STRICTURES_EXTRA}\n";
-      }
-      $ENV{PERL_STRICTURES_EXTRA};
-    } elsif (! _PERL_LT_5_8_4) {
-      (caller(4))[1] =~ /^(?:t|xt|lib|blib)[\\\/]/
-        and defined $Smells_Like_VCS ? $Smells_Like_VCS
-          : ( $Smells_Like_VCS = !!(
-            -e '.git' || -e '.svn' || -e '.hg'
-            || (-e '../../dist.ini'
-              && (-e '../../.git' || -e '../../.svn' || -e '../../.hg' ))
-          ))
-    }
-  };
-  return
-    unless $extra_tests;
-
   my @failed;
   foreach my $mod (@extras) {
     next
@@ -111,7 +118,6 @@ of a strictures-using module you need to run:
 but these modules are not required by your users.
 EOE
   }
-  return $extra_tests;
 }
 
 1;
