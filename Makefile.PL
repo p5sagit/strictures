@@ -44,8 +44,7 @@ my $support_configure_requires
   = $ENV{PERL5_CPANM_IS_RUNNING}
   || !$ENV{PERL5_CPAN_IS_RUNNING}
   || ! eval { require CPAN }
-  || $CPAN::VERSION > 1.94_55
-  || $CPAN::VERSION > 1.91_51 && $CPAN::VERSION < 1.93_51;
+  || $CPAN::VERSION > 1.94_55;
 
 
 WriteMakefile(
