@@ -7,8 +7,67 @@ BEGIN {
   *_PERL_LT_5_8_4 = ($] < 5.008004) ? sub(){1} : sub(){0};
 }
 
-our $VERSION = '1.005006';
+our $VERSION = '2.000000';
 $VERSION = eval $VERSION;
+
+our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
+  closure
+  deprecated
+  exiting
+  experimental
+    experimental::lexical_subs
+    experimental::lexical_topic
+    experimental::regex_sets
+    experimental::smartmatch
+  glob
+  imprecision
+  io
+    closed
+    exec
+    layer
+    newline
+    pipe
+    unopened
+  misc
+  numeric
+  once
+  overflow
+  pack
+  portable
+  recursion
+  redefine
+  regexp
+  severe
+    debugging
+    inplace
+    internal
+    malloc
+  signal
+  substr
+  syntax
+    ambiguous
+    bareword
+    digit
+    illegalproto
+    parenthesis
+    precedence
+    printf
+    prototype
+    qw
+    reserved
+    semicolon
+  taint
+  threads
+  uninitialized
+  unpack
+  untie
+  utf8
+    non_unicode
+    nonchar
+    surrogate
+  void
+  y2k
+);
 
 sub VERSION {
   no warnings;
@@ -54,6 +113,39 @@ sub _enable_1 {
   my ($class, $opts) = @_;
   strict->import;
   warnings->import(FATAL => 'all');
+
+  if (_want_extra($opts->{file})) {
+    _load_extras(qw(indirect multidimensional bareword::filehandles));
+    indirect->unimport(':fatal')
+      if $extra_load_states{indirect};
+    multidimensional->unimport
+      if $extra_load_states{multidimensional};
+    bareword::filehandles->unimport
+      if $extra_load_states{'bareword::filehandles'};
+  }
+}
+
+our @V2_NONFATAL = grep { exists $warnings::Offsets{$_} } qw(
+  exec
+  recursion
+  internal
+  malloc
+  newline
+  experimental
+  deprecated
+  portable
+);
+our @V2_DISABLE = grep { exists $warnings::Offsets{$_} } qw(
+  once
+);
+
+sub _enable_2 {
+  my ($class, $opts) = @_;
+  strict->import;
+  warnings->import;
+  warnings->import(FATAL => @WARNING_CATEGORIES);
+  warnings->import(NONFATAL => @V2_NONFATAL);
+  warnings->unimport(@V2_DISABLE);
 
   if (_want_extra($opts->{file})) {
     _load_extras(qw(indirect multidimensional bareword::filehandles));

@@ -30,8 +30,24 @@ sub test_hints {
   BEGIN { test_hints "version 1" }
 }
 
+{
+  use strict;
+  BEGIN {
+    warnings->import('all');
+    warnings->import(FATAL => @strictures::WARNING_CATEGORIES);
+    warnings->import(NONFATAL => @strictures::V2_NONFATAL);
+    warnings->unimport(@strictures::V2_DISABLE);
+  }
+  BEGIN { capture_hints }
+}
+
+{
+  use strictures 2;
+  BEGIN { test_hints "version 2" }
+}
+
 my $v;
 eval { $v = strictures->VERSION; 1 } or diag $@;
 is $v, $strictures::VERSION, '->VERSION returns version correctly';
 
-ok(!eval q{use strictures 2; 1; }, "Can't use strictures 2 (this is version 1)");
+ok(!eval q{use strictures 3; 1; }, "Can't use strictures 3 (this is version 2)");
