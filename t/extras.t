@@ -79,7 +79,7 @@ use strictures;
 
 {
   local $ENV{PERL_STRICTURES_EXTRA} = 1;
-  local $strictures::extra_load_states = undef;
+  local %strictures::extra_load_states = ();
   local @INC = (sub {
     die "Can't locate $_[1] in \@INC (...).\n"
       if $extras{$_[1]};

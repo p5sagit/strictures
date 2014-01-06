@@ -21,7 +21,7 @@ sub VERSION {
   goto &UNIVERSAL::VERSION;
 }
 
-our $extra_load_states;
+our %extra_load_states;
 
 our $Smells_Like_VCS;
 
@@ -52,6 +52,15 @@ sub _enable_1 {
   strict->import;
   warnings->import(FATAL => 'all');
 
+  _load_extras(qw(indirect multidimensional bareword::filehandles))
+    or return;
+  indirect->unimport(':fatal') if $extra_load_states{indirect};
+  multidimensional->unimport if $extra_load_states{multidimensional};
+  bareword::filehandles->unimport if $extra_load_states{'bareword::filehandles'};
+}
+
+sub _load_extras {
+  my @extras = @_;
   my $extra_tests = do {
     if (exists $ENV{PERL_STRICTURES_EXTRA}) {
       if (_PERL_LT_5_8_4 and $ENV{PERL_STRICTURES_EXTRA}) {
@@ -60,7 +69,7 @@ sub _enable_1 {
       }
       $ENV{PERL_STRICTURES_EXTRA};
     } elsif (! _PERL_LT_5_8_4) {
-      (caller(3))[1] =~ /^(?:t|xt|lib|blib)[\\\/]/
+      (caller(4))[1] =~ /^(?:t|xt|lib|blib)[\\\/]/
         and defined $Smells_Like_VCS ? $Smells_Like_VCS
           : ( $Smells_Like_VCS = !!(
             -e '.git' || -e '.svn' || -e '.hg'
@@ -69,26 +78,27 @@ sub _enable_1 {
           ))
     }
   };
-  if ($extra_tests) {
-    $extra_load_states ||= do {
+  return
+    unless $extra_tests;
 
-      my (%rv, @failed);
-      foreach my $mod (qw(indirect multidimensional bareword::filehandles)) {
-        eval "require $mod; \$rv{'$mod'} = 1;" or do {
-          push @failed, $mod;
+  my @failed;
+  foreach my $mod (@extras) {
+    next
+      if exists $extra_load_states{$mod};
 
-          # courtesy of the 5.8 require bug
-          # (we do a copy because 5.16.2 at least uses the same read-only
-          # scalars for the qw() list and it doesn't seem worth a $^V check)
+    $extra_load_states{$mod} = eval "require $mod; 1;" or do {
+      push @failed, $mod;
 
-          (my $file = $mod) =~ s|::|/|g;
-          delete $INC{"${file}.pm"};
-        };
-      }
+      #work around 5.8 require bug
+      (my $file = $mod) =~ s|::|/|g;
+      delete $INC{"${file}.pm"};
+    };
+  }
 
-      if (@failed) {
-        my $failed = join ' ', @failed;
-        print STDERR <<EOE;
+  if (@failed) {
+    my $failed = join ' ', @failed;
+    my $extras = join ' ', @extras;
+    print STDERR <<EOE;
 strictures.pm extra testing active but couldn't load all modules. Missing were:
 
   $failed
@@ -96,19 +106,12 @@ strictures.pm extra testing active but couldn't load all modules. Missing were:
 Extra testing is auto-enabled in checkouts only, so if you're the author
 of a strictures-using module you need to run:
 
-  cpan indirect multidimensional bareword::filehandles
+  cpan $extras
 
 but these modules are not required by your users.
 EOE
-      }
-
-      \%rv;
-    };
-
-    indirect->unimport(':fatal') if $extra_load_states->{indirect};
-    multidimensional->unimport if $extra_load_states->{multidimensional};
-    bareword::filehandles->unimport if $extra_load_states->{'bareword::filehandles'};
   }
+  return $extra_tests;
 }
 
 1;
