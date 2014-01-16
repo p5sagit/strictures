@@ -44,7 +44,8 @@ sub _enable {
     if !defined $version;
   my $method = "_enable_$version";
   if (!$class->can($method)) {
-    die "Major version specified as $version - not supported!";
+    require Carp;
+    Carp::croak("Major version specified as $version - not supported!");
   }
   $class->$method($opts);
 }
