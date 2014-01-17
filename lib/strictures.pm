@@ -229,12 +229,23 @@ strictures - turn on strict and make all warnings fatal
 
 =head1 SYNOPSIS
 
-  use strictures 1;
+  use strictures 2;
 
 is equivalent to
 
   use strict;
   use warnings FATAL => 'all';
+  use warnings NONFATAL => qw(
+    exec
+    recursion
+    internal
+    malloc
+    newline
+    experimental
+    deprecated
+    portable
+  );
+  no warnings 'once';
 
 except when called from a file which matches:
 
@@ -247,12 +258,23 @@ C<dist.ini> (which would indicate we are in a C<dzil test> operation, via
 L<Dist::Zilla>) -- or when the C<PERL_STRICTURES_EXTRA> environment variable is
 set, in which case
 
-  use strictures 1;
+  use strictures 2;
 
 is equivalent to
 
   use strict;
   use warnings FATAL => 'all';
+  use warnings NONFATAL => qw(
+    exec
+    recursion
+    internal
+    malloc
+    newline
+    experimental
+    deprecated
+    portable
+  );
+  no warnings 'once';
   no indirect 'fatal';
   no multidimensional;
   no bareword::filehandles;
@@ -295,20 +317,47 @@ increase (e.g. 1.000000 to 1.001000 (1.1.0) or similar). Any fixes only to the
 mechanism of this code will result in a sub-version increase (e.g. 1.000000 to
 1.000001 (1.0.1)).
 
-If the behaviour of C<use strictures> in normal mode changes in any way, that
-will constitute a major version increase -- and the code already checks
-when its version is tested to ensure that
+=head1 VERSIONS
 
-  use strictures 1;
+Depending on the version of strictures requested, different warnings will be
+enabled.  If no specific version is requested, the current version's behavior
+will be used.  Versions can be requested using perl's standard mechanism:
 
-will continue to only introduce the current set of strictures even if 2.0 is
-installed.
+  use strictures 2;
+
+Or, by passing in a C<version> option:
+
+  use strictures version => 2;
+
+=head2 VERSION 2
+
+Equivalent to:
+
+  use strict;
+  use warnings FATAL => 'all';
+  use warnings NONFATAL => 'deprecated', 'experimental';
+  # and if in dev mode:
+  no indirect 'fatal';
+  no multidimensional;
+  no bareword::filehandles;
+
+=head2 VERSION 1
+
+Equivalent to:
+
+  use strict;
+  use warnings FATAL => 'all';
+  # and if in dev mode:
+  no indirect 'fatal';
+  no multidimensional;
+  no bareword::filehandles;
 
 =head1 METHODS
 
 =head2 import
 
-This method does the setup work described above in L</DESCRIPTION>
+This method does the setup work described above in L</DESCRIPTION>.  Optionally
+accepts a C<version> option to request a specific version's behavior.
 
 =head2 VERSION
 
