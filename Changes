@@ -1,5 +1,6 @@
 Release history for strictures
 
+1.005003 - 2014-02-12
   - added support for PUREPERL_ONLY (rt#91407)
   - fixed using strictures->VERSION to query the version (rt#92965)
 
