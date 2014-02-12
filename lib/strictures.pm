@@ -10,15 +10,14 @@ BEGIN {
 our $VERSION = '1.005002'; # 1.5.2
 
 sub VERSION {
-  for ($_[1]) {
+  my ($class, $version) = @_;
+  for ($version) {
     last unless defined && !ref && int != 1;
     die "Major version specified as $_ - this is strictures version 1";
   }
-  # disable this since Foo->VERSION(undef) correctly returns the version
-  # and that can happen either if our caller passes undef explicitly or
-  # because the for above autovivified $_[1] - I could make it stop but
-  # it's pointless since we don't want to blow up if the caller does
-  # something valid either.
+  # passing undef here may either warn or die depending on the version of perl.
+  # we can't match the caller's warning state in this case, so just disable the
+  # warning.
   no warnings 'uninitialized';
   shift->SUPER::VERSION(@_);
 }
