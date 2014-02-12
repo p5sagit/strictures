@@ -43,8 +43,11 @@ my $have_compiler
 my $support_configure_requires
   = $ENV{PERL5_CPANM_IS_RUNNING}
   || !$ENV{PERL5_CPAN_IS_RUNNING}
-  || ! eval { require CPAN }
-  || $CPAN::VERSION > 1.94_55;
+  || do {
+    my ($cpanpm) = grep { -e } map { "$_/CPAN.pm" } @INC;
+    my $v = $cpanpm && MM->parse_version($cpanpm);
+    ($v and $v = eval $v) ? $v > 1.94_55 : 1;
+  };
 
 
 WriteMakefile(
