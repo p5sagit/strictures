@@ -1,8 +1,11 @@
 use strict;
 use warnings FATAL => 'all';
-use ExtUtils::MakeMaker;
+use 5.006;
 
-(do 'maint/Makefile.PL.include' or die $@) unless -f 'META.yml';
+my $have_compiler
+  = ! parse_args()->{PUREPERL_ONLY}
+  &&  eval { require ExtUtils::CBuilder; 1 }
+  && ExtUtils::CBuilder->new->have_compiler;
 
 my %extra_prereqs = (
   indirect => 0,
@@ -10,9 +13,53 @@ my %extra_prereqs = (
   'bareword::filehandles' => 0,
 );
 
-use Text::ParseWords;
+my %META = (
+  name => 'strictures',
+  license => 'perl_5',
+  prereqs => {
+    configure => { requires => { } },
+    build => { requires => { } },
+    test => { requires => {
+      'Test::More' => 0,
+    } },
+    runtime => {
+      requires => { },
+      recommends => {
+        %extra_prereqs,
+      },
+    },
+    develop => { requires => {
+      %extra_prereqs,
+    } },
+  },
+  resources => {
+    # r/w: p5sagit@git.shadowcat.co.uk:strictures.git
+    repository => {
+      url => 'git://git.shadowcat.co.uk/p5sagit/strictures.git',
+      web => 'http://git.shadowcat.co.uk/gitweb/gitweb.cgi?p=p5sagit/strictures.git',
+      type => 'git',
+    },
+    bugtracker => {
+      mailto => 'bug-strictures@rt.cpan.org',
+      web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=strictures',
+    },
+    license => [ 'http://dev.perl.org/licenses/' ],
+  },
+  no_index => {
+    directory => [ 't', 'xt' ]
+  },
+);
+
+my %MM_ARGS = (
+  PREREQ_PM => {
+    ($] >= 5.008004 && $have_compiler ? %extra_prereqs : () )
+  },
+);
+
 sub parse_args {
   # copied from EUMM
+  require ExtUtils::MakeMaker;
+  require Text::ParseWords;
   ExtUtils::MakeMaker::parse_args(
     my $tmp = {},
     Text::ParseWords::shellwords($ENV{PERL_MM_OPT} || ''),
@@ -21,46 +68,42 @@ sub parse_args {
   return $tmp->{ARGS} || {};
 }
 
-my $have_compiler
-  = ! parse_args()->{PUREPERL_ONLY}
-  &&  eval { require ExtUtils::CBuilder; 1 }
-  && ExtUtils::CBuilder->new->have_compiler;
+##############################################################################
+require ExtUtils::MakeMaker;
+(do 'maint/Makefile.PL.include' or die $@) unless -f 'META.yml';
 
-WriteMakefile(
-  NAME => 'strictures',
-  VERSION_FROM => 'lib/strictures.pm',
-  MIN_PERL_VERSION => '5.006',
+# have to do this since old EUMM dev releases miss the eval $VERSION line
+my $eumm_version  = eval $ExtUtils::MakeMaker::VERSION;
+my $mymeta        = $eumm_version >= 6.57_02;
+my $mymeta_broken = $mymeta && $eumm_version < 6.57_07;
 
-  META_MERGE => {
-    'meta-spec' => { version => 2 },
-    dynamic_config => 1,
+($MM_ARGS{NAME} = $META{name}) =~ s/-/::/g;
+($MM_ARGS{VERSION_FROM} = "lib/$MM_ARGS{NAME}.pm") =~ s{::}{/}g;
+$MM_ARGS{LICENSE} = $META{license}
+  if $eumm_version >= 6.30;
+$MM_ARGS{NO_MYMETA} = 1
+  if $mymeta_broken;
+$MM_ARGS{META_ADD} = { 'meta-spec' => { version => 2 }, %META }
+  unless -f 'META.yml';
 
-    resources => {
-      # r/w: p5sagit@git.shadowcat.co.uk:strictures.git
-      repository => {
-        url => 'git://git.shadowcat.co.uk/p5sagit/strictures.git',
-        web => 'http://git.shadowcat.co.uk/gitweb/gitweb.cgi?p=p5sagit/strictures.git',
-        type => 'git',
-      },
-      bugtracker => {
-          mailto => 'bug-strictures@rt.cpan.org',
-          web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=strictures',
-      },
-    },
+for (qw(configure build test runtime)) {
+  my $key = $_ eq 'runtime' ? 'PREREQ_PM' : uc $_.'_REQUIRES';
+  my $r = $MM_ARGS{$key} = {
+    %{$META{prereqs}{$_}{requires}},
+    %{delete $MM_ARGS{$key} || {}},
+  };
+  defined $r->{$_} or delete $r->{$_} for keys %$r;
+}
 
-    prereqs => {
-      configure => {
-        requires => {
-          'ExtUtils::CBuilder' => 0,
-        },
-      },
-      runtime => {
-        ( $] >= 5.008004 && !$have_compiler
-          ? ( recommends => \%extra_prereqs ) : () ),
-      },
-    },
-  },
+$MM_ARGS{MIN_PERL_VERSION} = delete $MM_ARGS{PREREQ_PM}{perl} || 0;
 
-  ($] >= 5.008004 && $have_compiler
-    ? ( PREREQ_PM => \%extra_prereqs ) : () ),
-);
+delete $MM_ARGS{MIN_PERL_VERSION}
+  if $eumm_version < 6.47_01;
+$MM_ARGS{BUILD_REQUIRES} = {%{$MM_ARGS{BUILD_REQUIRES}}, %{delete $MM_ARGS{TEST_REQUIRES}}}
+  if $eumm_version < 6.63_03;
+$MM_ARGS{PREREQ_PM} = {%{$MM_ARGS{PREREQ_PM}}, %{delete $MM_ARGS{BUILD_REQUIRES}}}
+  if $eumm_version < 6.55_01;
+delete $MM_ARGS{CONFIGURE_REQUIRES}
+  if $eumm_version < 6.51_03;
+
+ExtUtils::MakeMaker::WriteMakefile(%MM_ARGS);
