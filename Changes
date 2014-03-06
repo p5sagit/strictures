@@ -1,5 +1,6 @@
 Release history for strictures
 
+1.005004 - 2014-03-06
   - make sure meta files list extra modules as recommendations, not requirements
 
 1.005003 - 2014-02-12
