@@ -110,11 +110,12 @@ except when called from a file which matches:
 
   (caller)[1] =~ /^(?:t|xt|lib|blib)[\\\/]/
 
-and when either C<.git>, C<.svn>, or C<.hg> is present in the current directory (with
-the intention of only forcing extra tests on the author side) -- or when C<.git>,
-C<.svn>, or C<.hg> is present two directories up along with C<dist.ini> (which would
-indicate we are in a C<dzil test> operation, via L<Dist::Zilla>) --
-or when the C<PERL_STRICTURES_EXTRA> environment variable is set, in which case
+and when either C<.git>, C<.svn>, or C<.hg> is present in the current directory
+(with the intention of only forcing extra tests on the author side) -- or when
+C<.git>, C<.svn>, or C<.hg> is present two directories up along with
+C<dist.ini> (which would indicate we are in a C<dzil test> operation, via
+L<Dist::Zilla>) -- or when the C<PERL_STRICTURES_EXTRA> environment variable is
+set, in which case
 
   use strictures 1;
 
@@ -126,9 +127,9 @@ is equivalent to
   no multidimensional;
   no bareword::filehandles;
 
-Note that C<PERL_STRICTURES_EXTRA> may at some point add even more tests, with only a minor
-version increase, but any changes to the effect of C<use strictures> in
-normal mode will involve a major version bump.
+Note that C<PERL_STRICTURES_EXTRA> may at some point add even more tests, with
+only a minor version increase, but any changes to the effect of C<use
+strictures> in normal mode will involve a major version bump.
 
 If any of the extra testing modules are not present, L<strictures> will
 complain loudly, once, via C<warn()>, and then shut up. But you really
@@ -159,10 +160,10 @@ undesired behaviour this can be overridden by setting the
 C<PERL_STRICTURES_EXTRA> environment variable.
 
 If additional useful author side checks come to mind, I'll add them to the
-C<PERL_STRICTURES_EXTRA> code path only -- this will result in a minor version increase (e.g.
-1.000000 to 1.001000 (1.1.0) or similar). Any fixes only to the mechanism of
-this code will result in a sub-version increase (e.g. 1.000000 to 1.000001
-(1.0.1)).
+C<PERL_STRICTURES_EXTRA> code path only -- this will result in a minor version
+increase (e.g. 1.000000 to 1.001000 (1.1.0) or similar). Any fixes only to the
+mechanism of this code will result in a sub-version increase (e.g. 1.000000 to
+1.000001 (1.0.1)).
 
 If the behaviour of C<use strictures> in normal mode changes in any way, that
 will constitute a major version increase -- and the code already checks
@@ -234,9 +235,9 @@ significantly over time, especially for 1.004 where we changed things to
 ensure it only fires on files in your checkout (rather than L<strictures>-using
 modules you happened to have installed, which was just silly). However, I
 hope the above clarifies why a heuristic approach is not only necessary but
-desirable from a point of view of providing new users with as much safety as possible,
-and will allow any future discussion on the subject to focus on "how do we
-minimise annoyance to people deploying from checkouts intentionally".
+desirable from a point of view of providing new users with as much safety as
+possible, and will allow any future discussion on the subject to focus on "how
+do we minimise annoyance to people deploying from checkouts intentionally".
 
 =head1 SEE ALSO
 
