@@ -125,18 +125,18 @@ sub _enable_1 {
   }
 }
 
-our @V2_NONFATAL = grep { exists $warnings::Offsets{$_} } qw(
-  exec
-  recursion
-  internal
-  malloc
-  newline
-  experimental
-  deprecated
-  portable
+our @V2_NONFATAL = grep { exists $warnings::Offsets{$_} } (
+  'exec',         # not safe to catch
+  'recursion',    # will be caught by other mechanisms
+  'internal',     # not safe to catch
+  'malloc',       # not safe to catch
+  'newline',      # stat on nonexistent file with a newline in it
+  'experimental', # no reason for these to be fatal
+  'deprecated',   # unfortunately can't make these fatal
+  'portable',     # everything worked fine here, just may not elsewhere
 );
-our @V2_DISABLE = grep { exists $warnings::Offsets{$_} } qw(
-  once
+our @V2_DISABLE = grep { exists $warnings::Offsets{$_} } (
+  'once'          # triggers inconsistently, can't be fatalized
 );
 
 sub _enable_2 {
