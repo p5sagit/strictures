@@ -15,9 +15,12 @@ our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
   deprecated
   exiting
   experimental
+    experimental::autoderef
     experimental::lexical_subs
     experimental::lexical_topic
+    experimental::postderef
     experimental::regex_sets
+    experimental::signatures
     experimental::smartmatch
   glob
   imprecision
@@ -27,6 +30,7 @@ our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
     layer
     newline
     pipe
+    syscalls
     unopened
   misc
   numeric
