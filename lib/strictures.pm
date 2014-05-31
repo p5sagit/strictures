@@ -65,15 +65,22 @@ sub _enable_1 {
   }
 }
 
-sub _want_extra {
-  my $file = shift;
+sub _want_extra_env {
   if (exists $ENV{PERL_STRICTURES_EXTRA}) {
     if (_PERL_LT_5_8_4 and $ENV{PERL_STRICTURES_EXTRA}) {
       die 'PERL_STRICTURES_EXTRA checks are not available on perls older'
         . "than 5.8.4: please unset \$ENV{PERL_STRICTURES_EXTRA}\n";
     }
-    return $ENV{PERL_STRICTURES_EXTRA};
+    return $ENV{PERL_STRICTURES_EXTRA} ? 1 : 0;
   }
+  return undef;
+}
+
+sub _want_extra {
+  my $file = shift;
+  my $want_env = _want_extra_env();
+  return $want_env
+    if defined $want_env;
   return (
     !_PERL_LT_5_8_4
     and $file =~ /^(?:t|xt|lib|blib)[\\\/]/
