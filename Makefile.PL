@@ -31,6 +31,9 @@ my %META = (
       },
     },
     develop => { requires => {
+      'Test::Pod' => 0,
+      'Test::Pod::Coverage' => 0,
+      'Pod::Coverage::CountParents' => 0,
       %extra_prereqs,
     } },
   },
