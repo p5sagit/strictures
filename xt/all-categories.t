@@ -1,3 +1,10 @@
+BEGIN {
+  if (keys %INC) {
+    print "1..0 # SKIP can't test categories with additional modules loaded\n";
+    exit 0;
+  }
+}
+
 use strict;
 use warnings;
 
