@@ -8,6 +8,7 @@ use autodie;
 chomp(my $LATEST = qx(grep '^[0-9]' Changes | head -1 | awk '{print \$1}'));
 
 my @parts = split /\./, $LATEST;
+push @parts, 0, 0;
 
 my $OLD_DECIMAL = sprintf('%i.%03i%03i', @parts);
 
@@ -23,14 +24,16 @@ $new_parts[$bump_this]++;
 
 my $NEW_DECIMAL = sprintf('%i.%03i%03i', @new_parts);
 
-warn "Bumping $OLD_DECIMAL -> $NEW_DECIMAL\n";
+my @PM_FILES = ( 'lib/strictures.pm' );
 
-my $PM_FILE = 'lib/Module/Metadata.pm';
+foreach my $filename (@PM_FILES) {
+  warn "Bumping $OLD_DECIMAL -> $NEW_DECIMAL in $filename\n";
 
-my $file = do { local (@ARGV, $/) = ($PM_FILE); <> };
+  my $file = do { local (@ARGV, $/) = ($filename); <> };
 
-$file =~ s/(?<=\$VERSION = ')${\quotemeta $OLD_DECIMAL}/${NEW_DECIMAL}/;
+  $file =~ s/(?<=\$VERSION = ')${\quotemeta $OLD_DECIMAL}/${NEW_DECIMAL}/;
 
-open my $out, '>', $PM_FILE;
+  open my $out, '>', $filename;
 
-print $out $file;
+  print $out $file;
+}
