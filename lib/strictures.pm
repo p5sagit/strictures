@@ -148,7 +148,8 @@ sub _enable_2 {
   strict->import;
   warnings->import;
   warnings->import(FATAL => @WARNING_CATEGORIES);
-  warnings->import(NONFATAL => @V2_NONFATAL);
+  warnings->unimport(FATAL => @V2_NONFATAL);
+  warnings->import(@V2_NONFATAL);
   warnings->unimport(@V2_DISABLE);
 
   if (_want_extra($opts->{file})) {

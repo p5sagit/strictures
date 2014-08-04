@@ -35,7 +35,8 @@ sub test_hints {
   BEGIN {
     warnings->import('all');
     warnings->import(FATAL => @strictures::WARNING_CATEGORIES);
-    warnings->import(NONFATAL => @strictures::V2_NONFATAL);
+    warnings->unimport(FATAL => @strictures::V2_NONFATAL);
+    warnings->import(@strictures::V2_NONFATAL);
     warnings->unimport(@strictures::V2_DISABLE);
   }
   BEGIN { capture_hints }
