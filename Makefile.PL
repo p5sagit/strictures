@@ -26,6 +26,7 @@ my %META = (
       requires => { },
       recommends => {
         %extra_prereqs,
+        perl => '5.006',
       },
     },
     develop => { requires => {
