@@ -23,10 +23,11 @@ my %META = (
       'Test::More' => 0,
     } },
     runtime => {
-      requires => { },
+      requires => {
+        perl => '5.006',
+      },
       recommends => {
         %extra_prereqs,
-        perl => '5.006',
       },
     },
     develop => { requires => {
