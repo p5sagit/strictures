@@ -1,5 +1,7 @@
 Release history for strictures
 
+  - include minimum perl version in metadata
+
 1.005004 - 2014-03-06
   - make sure meta files list extra modules as recommendations, not requirements
 
