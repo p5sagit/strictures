@@ -1,5 +1,6 @@
 Release history for strictures
 
+1.005005 - 2014-08-16
   - include minimum perl version in metadata
 
 1.005004 - 2014-03-06
