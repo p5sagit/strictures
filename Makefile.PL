@@ -56,7 +56,6 @@ my %MM_ARGS = (
   PREREQ_PM => {
     ($] >= 5.008004 && $have_compiler ? %extra_prereqs : () )
   },
-  realclean => { FILES => [ 'Distar/', 'MANIFEST*' ] },
 );
 
 sub parse_args {
