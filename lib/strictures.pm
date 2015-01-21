@@ -261,25 +261,8 @@ and when either C<.git>, C<.svn>, or C<.hg> is present in the current directory
 C<.git>, C<.svn>, or C<.hg> is present two directories up along with
 C<dist.ini> (which would indicate we are in a C<dzil test> operation, via
 L<Dist::Zilla>) -- or when the C<PERL_STRICTURES_EXTRA> environment variable is
-set, in which case
+set, in which case it also does the equivalent of
 
-  use strictures 2;
-
-is equivalent to
-
-  use strict;
-  use warnings FATAL => 'all';
-  use warnings NONFATAL => qw(
-    exec
-    recursion
-    internal
-    malloc
-    newline
-    experimental
-    deprecated
-    portable
-  );
-  no warnings 'once';
   no indirect 'fatal';
   no multidimensional;
   no bareword::filehandles;
