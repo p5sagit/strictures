@@ -4,12 +4,9 @@ use Test::Pod::Coverage;
 use strict;
 use warnings FATAL => 'all';
 
-# the all_ things attempt to plan, which we didn't want, so stop them
-# from doing that
-no warnings 'redefine';
-local *Test::Builder::plan = sub { };
-
-all_pod_files_ok;
-all_pod_coverage_ok({ coverage_class => 'Pod::Coverage::CountParents' });
+pod_file_ok($_)
+  for all_pod_files;
+pod_coverage_ok($_, { coverage_class => 'Pod::Coverage::CountParents' })
+  for all_modules;
 
 done_testing;
