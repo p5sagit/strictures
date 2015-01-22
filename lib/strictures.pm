@@ -331,11 +331,25 @@ Equivalent to:
 
   use strict;
   use warnings FATAL => 'all';
-  use warnings NONFATAL => 'deprecated', 'experimental';
+  use warnings NONFATAL => qw(
+    exec
+    recursion
+    internal
+    malloc
+    newline
+    experimental
+    deprecated
+    portable
+  );
+  no warnings 'once';
+
   # and if in dev mode:
   no indirect 'fatal';
   no multidimensional;
   no bareword::filehandles;
+
+Additionally, any warnings created by modules using L<warnings::register> or
+C<warnings::register_categories()> will not be fatalized.
 
 =head2 VERSION 1
 
