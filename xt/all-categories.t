@@ -15,7 +15,7 @@ use strictures ();
 # avoid loading Test::More, since it adds warning categories
 
 my %known_cats; @known_cats{@strictures::WARNING_CATEGORIES} = ();
-my %core_cats; @core_cats{grep $_ ne 'all', keys %warnings::Offsets} = ();
+my %core_cats; @core_cats{grep ! /^(?:all|everything|extra)$/, keys %warnings::Offsets} = ();
 my @missing = sort grep { !exists $known_cats{$_} } keys %core_cats;
 my @extra   = sort grep { !exists $core_cats{$_} } keys %known_cats;
 

@@ -16,12 +16,16 @@ our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
   exiting
   experimental
     experimental::autoderef
+    experimental::const_attr
     experimental::lexical_subs
     experimental::lexical_topic
     experimental::postderef
+    experimental::re_strict
+    experimental::refaliasing
     experimental::regex_sets
     experimental::signatures
     experimental::smartmatch
+    experimental::win32_perlio
   glob
   imprecision
   io
@@ -32,7 +36,9 @@ our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
     pipe
     syscalls
     unopened
+  locale
   misc
+  missing
   numeric
   once
   overflow
@@ -40,6 +46,7 @@ our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
   portable
   recursion
   redefine
+  redundant
   regexp
   severe
     debugging
@@ -70,6 +77,7 @@ our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
     nonchar
     surrogate
   void
+  void_unusual
   y2k
 );
 
