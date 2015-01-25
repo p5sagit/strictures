@@ -313,6 +313,54 @@ increase (e.g. 1.000000 to 1.001000 (1.1.0) or similar). Any fixes only to the
 mechanism of this code will result in a sub-version increase (e.g. 1.000000 to
 1.000001 (1.0.1)).
 
+=head1 CATEGORY SELECTIONS
+
+strictures does not enable fatal warnings for all categories.
+
+=over 4
+
+=item exec
+
+Includes a warning that can cause your program to continue running
+unintentionally after an internal fork.  Not safe to fatalize.
+
+=item recursion
+
+Infinite recursion will end up overflowing the stack eventually anyway.
+
+=item internal
+
+Triggers deep within perl, in places that are not safe to trap.
+
+=item malloc
+
+Triggers deep within perl, in places that are not safe to trap.
+
+=item newline
+
+Includes a warning for using stat on a valid but suspect filename, ending in a
+newline.
+
+=item experimental
+
+Experimental features are used intentionally.
+
+=item deprecated
+
+Deprecations will inherently be added to in the future in unexpected ways,
+so making them fatal won't be reliable.
+
+=item portable
+
+Doesn't indicate an actual problem with the program, only that it may not
+behave properly if run on a different machine.
+
+=item once
+
+Can't be fatalized.  Also triggers very inconsistently, so we just disable it.
+
+=back
+
 =head1 VERSIONS
 
 Depending on the version of strictures requested, different warnings will be
