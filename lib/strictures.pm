@@ -40,7 +40,7 @@ sub import {
       }
       $ENV{PERL_STRICTURES_EXTRA};
     } elsif (! _PERL_LT_5_8_4) {
-      !!((caller)[1] =~ /^(?:t|xt|lib|blib)/
+      !!((caller)[1] =~ /^(?:t|xt|lib|blib)[\\\/]/
          and $Smells_Like_VCS)
     }
   };
