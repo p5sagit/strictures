@@ -24,9 +24,7 @@ sub VERSION {
 
 our $extra_load_states;
 
-our $Smells_Like_VCS = (-e '.git' || -e '.svn' || -e '.hg'
-  || (-e '../../dist.ini'
-      && (-e '../../.git' || -e '../../.svn' || -e '../../.hg' )));
+our $Smells_Like_VCS;
 
 sub import {
   strict->import;
@@ -39,9 +37,14 @@ sub import {
           . "please unset \$ENV{PERL_STRICTURES_EXTRA}\n";
       }
       $ENV{PERL_STRICTURES_EXTRA};
-    } elsif (! _PERL_LT_5_8_4) {
-      !!((caller)[1] =~ /^(?:t|xt|lib|blib)[\\\/]/
-         and $Smells_Like_VCS)
+    } elsif (_PERL_LT_5_8_4) {
+      (caller)[1] =~ /^(?:t|xt|lib|blib)[\\\/]/
+        and defined $Smells_Like_VCS ? $Smells_Like_VCS
+          : ( $Smells_Like_VCS = (
+            -e '.git' || -e '.svn' || -e '.hg'
+            || (-e '../../dist.ini'
+              && (-e '../../.git' || -e '../../.svn' || -e '../../.hg' ))
+          ))
     }
   };
   if ($extra_tests) {
