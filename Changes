@@ -1,5 +1,10 @@
 Release history for strictures
 
+  - fix extra checks triggering on paths starting with t, xt, lib, or blib,
+    rather than only triggering on those directories.
+  - avoid stat checks for VCS directories until we are in an appropriately
+    named file
+
 1.005005 - 2014-08-16
   - include minimum perl version in metadata
 
