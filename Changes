@@ -1,5 +1,6 @@
 Release history for strictures
 
+1.005006 - 2015-01-30
   - fix extra checks triggering on paths starting with t, xt, lib, or blib,
     rather than only triggering on those directories.
   - avoid stat checks for VCS directories until we are in an appropriately
