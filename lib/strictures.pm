@@ -8,6 +8,7 @@ BEGIN {
 }
 
 our $VERSION = '1.005005';
+$VERSION = eval $VERSION;
 
 sub VERSION {
   my ($class, $version) = @_;
