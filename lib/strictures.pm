@@ -107,7 +107,7 @@ is equivalent to
 
 except when called from a file which matches:
 
-  (caller)[1] =~ /^(?:t|xt|lib|blib)/
+  (caller)[1] =~ /^(?:t|xt|lib|blib)[\\\/]/
 
 and when either C<.git>, C<.svn>, or C<.hg> is present in the current directory (with
 the intention of only forcing extra tests on the author side) -- or when C<.git>,
