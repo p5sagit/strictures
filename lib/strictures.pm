@@ -7,8 +7,9 @@ BEGIN {
   *_PERL_LT_5_8_4 = ($] < 5.008004) ? sub(){1} : sub(){0};
 }
 
-our $VERSION = '2.000000';
+our $VERSION = '1.999_001';
 $VERSION = eval $VERSION;
+$VERSION = 2; # a bit of a cheat, but requesting v2 needs to be possible
 
 our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
   closure
