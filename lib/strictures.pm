@@ -7,67 +7,219 @@ BEGIN {
   *_PERL_LT_5_8_4 = ($] < 5.008004) ? sub(){1} : sub(){0};
 }
 
-our $VERSION = '1.005006';
+our $VERSION = '1.999_001';
 $VERSION = eval $VERSION;
+$VERSION = 2; # a bit of a cheat, but requesting v2 needs to be possible
+
+our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
+  closure
+  deprecated
+  exiting
+  experimental
+    experimental::autoderef
+    experimental::const_attr
+    experimental::lexical_subs
+    experimental::lexical_topic
+    experimental::postderef
+    experimental::re_strict
+    experimental::refaliasing
+    experimental::regex_sets
+    experimental::signatures
+    experimental::smartmatch
+    experimental::win32_perlio
+  glob
+  imprecision
+  io
+    closed
+    exec
+    layer
+    newline
+    pipe
+    syscalls
+    unopened
+  locale
+  misc
+  missing
+  numeric
+  once
+  overflow
+  pack
+  portable
+  recursion
+  redefine
+  redundant
+  regexp
+  severe
+    debugging
+    inplace
+    internal
+    malloc
+  signal
+  substr
+  syntax
+    ambiguous
+    bareword
+    digit
+    illegalproto
+    parenthesis
+    precedence
+    printf
+    prototype
+    qw
+    reserved
+    semicolon
+  taint
+  threads
+  uninitialized
+  unpack
+  untie
+  utf8
+    non_unicode
+    nonchar
+    surrogate
+  void
+  void_unusual
+  y2k
+);
 
 sub VERSION {
-  my ($class, $version) = @_;
-  for ($version) {
-    last unless defined && !ref && int != 1;
-    die "Major version specified as $_ - this is strictures version 1";
+  no warnings;
+  local $@;
+  if (defined $_[1] && eval { $_[0]->UNIVERSAL::VERSION($_[1]); 1}) {
+    $^H |= 0x20000
+      unless _PERL_LT_5_8_4;
+    $^H{strictures_enable} = int $_[1];
   }
-  # passing undef here may either warn or die depending on the version of perl.
-  # we can't match the caller's warning state in this case, so just disable the
-  # warning.
-  no warnings 'uninitialized';
-  shift->SUPER::VERSION(@_);
+  goto &UNIVERSAL::VERSION;
 }
 
-our $extra_load_states;
+our %extra_load_states;
 
 our $Smells_Like_VCS;
 
 sub import {
+  my $class = shift;
+  my %opts = ref $_[0] ? %{$_[0]} : @_;
+  if (!exists $opts{version}) {
+    $opts{version}
+      = exists $^H{strictures_enable} ? delete $^H{strictures_enable}
+      : int $VERSION;
+  }
+  $opts{file} = (caller)[1];
+  $class->_enable(\%opts);
+}
+
+sub _enable {
+  my ($class, $opts) = @_;
+  my $version = $opts->{version};
+  $version = 'undef'
+    if !defined $version;
+  my $method = "_enable_$version";
+  if (!$class->can($method)) {
+    require Carp;
+    Carp::croak("Major version specified as $version - not supported!");
+  }
+  $class->$method($opts);
+}
+
+sub _enable_1 {
+  my ($class, $opts) = @_;
   strict->import;
   warnings->import(FATAL => 'all');
 
-  my $extra_tests = do {
-    if (exists $ENV{PERL_STRICTURES_EXTRA}) {
-      if (_PERL_LT_5_8_4 and $ENV{PERL_STRICTURES_EXTRA}) {
-        die 'PERL_STRICTURES_EXTRA checks are not available on perls older than 5.8.4: '
-          . "please unset \$ENV{PERL_STRICTURES_EXTRA}\n";
-      }
-      $ENV{PERL_STRICTURES_EXTRA};
-    } elsif (! _PERL_LT_5_8_4) {
-      (caller)[1] =~ /^(?:t|xt|lib|blib)[\\\/]/
-        and defined $Smells_Like_VCS ? $Smells_Like_VCS
-          : ( $Smells_Like_VCS = !!(
-            -e '.git' || -e '.svn' || -e '.hg'
-            || (-e '../../dist.ini'
-              && (-e '../../.git' || -e '../../.svn' || -e '../../.hg' ))
-          ))
+  if (_want_extra($opts->{file})) {
+    _load_extras(qw(indirect multidimensional bareword::filehandles));
+    indirect->unimport(':fatal')
+      if $extra_load_states{indirect};
+    multidimensional->unimport
+      if $extra_load_states{multidimensional};
+    bareword::filehandles->unimport
+      if $extra_load_states{'bareword::filehandles'};
+  }
+}
+
+our @V2_NONFATAL = grep { exists $warnings::Offsets{$_} } (
+  'exec',         # not safe to catch
+  'recursion',    # will be caught by other mechanisms
+  'internal',     # not safe to catch
+  'malloc',       # not safe to catch
+  'newline',      # stat on nonexistent file with a newline in it
+  'experimental', # no reason for these to be fatal
+  'deprecated',   # unfortunately can't make these fatal
+  'portable',     # everything worked fine here, just may not elsewhere
+);
+our @V2_DISABLE = grep { exists $warnings::Offsets{$_} } (
+  'once'          # triggers inconsistently, can't be fatalized
+);
+
+sub _enable_2 {
+  my ($class, $opts) = @_;
+  strict->import;
+  warnings->import;
+  warnings->import(FATAL => @WARNING_CATEGORIES);
+  warnings->unimport(FATAL => @V2_NONFATAL);
+  warnings->import(@V2_NONFATAL);
+  warnings->unimport(@V2_DISABLE);
+
+  if (_want_extra($opts->{file})) {
+    _load_extras(qw(indirect multidimensional bareword::filehandles));
+    indirect->unimport(':fatal')
+      if $extra_load_states{indirect};
+    multidimensional->unimport
+      if $extra_load_states{multidimensional};
+    bareword::filehandles->unimport
+      if $extra_load_states{'bareword::filehandles'};
+  }
+}
+
+sub _want_extra_env {
+  if (exists $ENV{PERL_STRICTURES_EXTRA}) {
+    if (_PERL_LT_5_8_4 and $ENV{PERL_STRICTURES_EXTRA}) {
+      die 'PERL_STRICTURES_EXTRA checks are not available on perls older'
+        . "than 5.8.4: please unset \$ENV{PERL_STRICTURES_EXTRA}\n";
     }
-  };
-  if ($extra_tests) {
-    $extra_load_states ||= do {
+    return $ENV{PERL_STRICTURES_EXTRA} ? 1 : 0;
+  }
+  return undef;
+}
 
-      my (%rv, @failed);
-      foreach my $mod (qw(indirect multidimensional bareword::filehandles)) {
-        eval "require $mod; \$rv{'$mod'} = 1;" or do {
-          push @failed, $mod;
+sub _want_extra {
+  my $file = shift;
+  my $want_env = _want_extra_env();
+  return $want_env
+    if defined $want_env;
+  return (
+    !_PERL_LT_5_8_4
+    and $file =~ /^(?:t|xt|lib|blib)[\\\/]/
+    and defined $Smells_Like_VCS ? $Smells_Like_VCS
+      : ( $Smells_Like_VCS = !!(
+        -e '.git' || -e '.svn' || -e '.hg'
+        || (-e '../../dist.ini'
+          && (-e '../../.git' || -e '../../.svn' || -e '../../.hg' ))
+      ))
+  );
+}
 
-          # courtesy of the 5.8 require bug
-          # (we do a copy because 5.16.2 at least uses the same read-only
-          # scalars for the qw() list and it doesn't seem worth a $^V check)
+sub _load_extras {
+  my @extras = @_;
+  my @failed;
+  foreach my $mod (@extras) {
+    next
+      if exists $extra_load_states{$mod};
 
-          (my $file = $mod) =~ s|::|/|g;
-          delete $INC{"${file}.pm"};
-        };
-      }
+    $extra_load_states{$mod} = eval "require $mod; 1;" or do {
+      push @failed, $mod;
 
-      if (@failed) {
-        my $failed = join ' ', @failed;
-        print STDERR <<EOE;
+      #work around 5.8 require bug
+      (my $file = $mod) =~ s|::|/|g;
+      delete $INC{"${file}.pm"};
+    };
+  }
+
+  if (@failed) {
+    my $failed = join ' ', @failed;
+    my $extras = join ' ', @extras;
+    print STDERR <<EOE;
 strictures.pm extra testing active but couldn't load all modules. Missing were:
 
   $failed
@@ -75,18 +227,10 @@ strictures.pm extra testing active but couldn't load all modules. Missing were:
 Extra testing is auto-enabled in checkouts only, so if you're the author
 of a strictures-using module you need to run:
 
-  cpan indirect multidimensional bareword::filehandles
+  cpan $extras
 
 but these modules are not required by your users.
 EOE
-      }
-
-      \%rv;
-    };
-
-    indirect->unimport(':fatal') if $extra_load_states->{indirect};
-    multidimensional->unimport if $extra_load_states->{multidimensional};
-    bareword::filehandles->unimport if $extra_load_states->{'bareword::filehandles'};
   }
 }
 
@@ -99,36 +243,42 @@ strictures - turn on strict and make all warnings fatal
 
 =head1 SYNOPSIS
 
-  use strictures 1;
+  use strictures 2;
 
 is equivalent to
 
   use strict;
   use warnings FATAL => 'all';
+  use warnings NONFATAL => qw(
+    exec
+    recursion
+    internal
+    malloc
+    newline
+    experimental
+    deprecated
+    portable
+  );
+  no warnings 'once';
 
 except when called from a file which matches:
 
   (caller)[1] =~ /^(?:t|xt|lib|blib)[\\\/]/
 
-and when either C<.git>, C<.svn>, or C<.hg> is present in the current directory (with
-the intention of only forcing extra tests on the author side) -- or when C<.git>,
-C<.svn>, or C<.hg> is present two directories up along with C<dist.ini> (which would
-indicate we are in a C<dzil test> operation, via L<Dist::Zilla>) --
-or when the C<PERL_STRICTURES_EXTRA> environment variable is set, in which case
+and when either C<.git>, C<.svn>, or C<.hg> is present in the current directory
+(with the intention of only forcing extra tests on the author side) -- or when
+C<.git>, C<.svn>, or C<.hg> is present two directories up along with
+C<dist.ini> (which would indicate we are in a C<dzil test> operation, via
+L<Dist::Zilla>) -- or when the C<PERL_STRICTURES_EXTRA> environment variable is
+set, in which case it also does the equivalent of
 
-  use strictures 1;
-
-is equivalent to
-
-  use strict;
-  use warnings FATAL => 'all';
   no indirect 'fatal';
   no multidimensional;
   no bareword::filehandles;
 
-Note that C<PERL_STRICTURES_EXTRA> may at some point add even more tests, with only a minor
-version increase, but any changes to the effect of C<use strictures> in
-normal mode will involve a major version bump.
+Note that C<PERL_STRICTURES_EXTRA> may at some point add even more tests, with
+only a minor version increase, but any changes to the effect of C<use
+strictures> in normal mode will involve a major version bump.
 
 If any of the extra testing modules are not present, L<strictures> will
 complain loudly, once, via C<warn()>, and then shut up. But you really
@@ -159,25 +309,114 @@ undesired behaviour this can be overridden by setting the
 C<PERL_STRICTURES_EXTRA> environment variable.
 
 If additional useful author side checks come to mind, I'll add them to the
-C<PERL_STRICTURES_EXTRA> code path only -- this will result in a minor version increase (e.g.
-1.000000 to 1.001000 (1.1.0) or similar). Any fixes only to the mechanism of
-this code will result in a sub-version increase (e.g. 1.000000 to 1.000001
-(1.0.1)).
+C<PERL_STRICTURES_EXTRA> code path only -- this will result in a minor version
+increase (e.g. 1.000000 to 1.001000 (1.1.0) or similar). Any fixes only to the
+mechanism of this code will result in a sub-version increase (e.g. 1.000000 to
+1.000001 (1.0.1)).
 
-If the behaviour of C<use strictures> in normal mode changes in any way, that
-will constitute a major version increase -- and the code already checks
-when its version is tested to ensure that
+=head1 CATEGORY SELECTIONS
 
-  use strictures 1;
+strictures does not enable fatal warnings for all categories.
 
-will continue to only introduce the current set of strictures even if 2.0 is
-installed.
+=over 4
+
+=item exec
+
+Includes a warning that can cause your program to continue running
+unintentionally after an internal fork.  Not safe to fatalize.
+
+=item recursion
+
+Infinite recursion will end up overflowing the stack eventually anyway.
+
+=item internal
+
+Triggers deep within perl, in places that are not safe to trap.
+
+=item malloc
+
+Triggers deep within perl, in places that are not safe to trap.
+
+=item newline
+
+Includes a warning for using stat on a valid but suspect filename, ending in a
+newline.
+
+=item experimental
+
+Experimental features are used intentionally.
+
+=item deprecated
+
+Deprecations will inherently be added to in the future in unexpected ways,
+so making them fatal won't be reliable.
+
+=item portable
+
+Doesn't indicate an actual problem with the program, only that it may not
+behave properly if run on a different machine.
+
+=item once
+
+Can't be fatalized.  Also triggers very inconsistently, so we just disable it.
+
+=back
+
+=head1 VERSIONS
+
+Depending on the version of strictures requested, different warnings will be
+enabled.  If no specific version is requested, the current version's behavior
+will be used.  Versions can be requested using perl's standard mechanism:
+
+  use strictures 2;
+
+Or, by passing in a C<version> option:
+
+  use strictures version => 2;
+
+=head2 VERSION 2
+
+Equivalent to:
+
+  use strict;
+  use warnings FATAL => 'all';
+  use warnings NONFATAL => qw(
+    exec
+    recursion
+    internal
+    malloc
+    newline
+    experimental
+    deprecated
+    portable
+  );
+  no warnings 'once';
+
+  # and if in dev mode:
+  no indirect 'fatal';
+  no multidimensional;
+  no bareword::filehandles;
+
+Additionally, any warnings created by modules using L<warnings::register> or
+C<warnings::register_categories()> will not be fatalized.
+
+=head2 VERSION 1
+
+Equivalent to:
+
+  use strict;
+  use warnings FATAL => 'all';
+  # and if in dev mode:
+  no indirect 'fatal';
+  no multidimensional;
+  no bareword::filehandles;
 
 =head1 METHODS
 
 =head2 import
 
-This method does the setup work described above in L</DESCRIPTION>
+This method does the setup work described above in L</DESCRIPTION>.  Optionally
+accepts a C<version> option to request a specific version's behavior.
 
 =head2 VERSION
 
@@ -234,9 +473,9 @@ significantly over time, especially for 1.004 where we changed things to
 ensure it only fires on files in your checkout (rather than L<strictures>-using
 modules you happened to have installed, which was just silly). However, I
 hope the above clarifies why a heuristic approach is not only necessary but
-desirable from a point of view of providing new users with as much safety as possible,
-and will allow any future discussion on the subject to focus on "how do we
-minimise annoyance to people deploying from checkouts intentionally".
+desirable from a point of view of providing new users with as much safety as
+possible, and will allow any future discussion on the subject to focus on "how
+do we minimise annoyance to people deploying from checkouts intentionally".
 
 =head1 SEE ALSO
 

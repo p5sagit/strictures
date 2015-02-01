@@ -1,5 +1,12 @@
 Release history for strictures
 
+  * Incompatible Changes
+    - strictures 2 fatalizes only a subset of warnings.  Some warning
+      categories are not safe to catch, or just inappropriate to have fatal.
+      Existing code looking like 'use strictures 1;' will continue to get the
+      old behavior of fatalizing all errors.  The new behavior will take effect
+      when no version or version 2 is specified.
+
 1.005006 - 2015-01-30
   - fix extra checks triggering on paths starting with t, xt, lib, or blib,
     rather than only triggering on those directories.
