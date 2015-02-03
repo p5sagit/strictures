@@ -3,8 +3,3 @@ use lib 'Distar/lib';
 use Distar;
 
 author 'mst - Matt S. Trout (cpan:MSTROUT) <mst@shadowcat.co.uk>';
-
-manifest_include(
-  't/smells-of-vcs' => qr{.*},
-  't/dep_constellations' => '.pm',
-);
