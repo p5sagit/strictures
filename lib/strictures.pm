@@ -8,7 +8,7 @@ BEGIN {
   *_CAN_GOTO_VERSION = ($] >= 5.008000) ? sub(){1} : sub(){0};
 }
 
-our $VERSION = '1.999_001';
+our $VERSION = '1.999_002';
 $VERSION = eval $VERSION;
 $VERSION = 2; # a bit of a cheat, but requesting v2 needs to be possible
 
