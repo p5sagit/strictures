@@ -51,4 +51,7 @@ my $v;
 eval { $v = strictures->VERSION; 1 } or diag $@;
 is $v, $strictures::VERSION, '->VERSION returns version correctly';
 
-ok(!eval q{use strictures 3; 1; }, "Can't use strictures 3 (this is version 2)");
+eval q{ use strictures 3; };
+
+like $@, qr/strictures version 3 required/,
+  "Can't use strictures 3 (this is version 2)";
