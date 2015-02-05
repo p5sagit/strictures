@@ -5,6 +5,7 @@ use warnings FATAL => 'all';
 
 BEGIN {
   *_PERL_LT_5_8_4 = ($] < 5.008004) ? sub(){1} : sub(){0};
+  *_CAN_GOTO_VERSION = ($] >= 5.008000) ? sub(){1} : sub(){0};
 }
 
 our $VERSION = '1.999_001';
@@ -83,14 +84,16 @@ our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
 );
 
 sub VERSION {
-  no warnings;
-  local $@;
-  if (defined $_[1] && eval { $_[0]->UNIVERSAL::VERSION($_[1]); 1}) {
-    $^H |= 0x20000
-      unless _PERL_LT_5_8_4;
-    $^H{strictures_enable} = int $_[1];
+  {
+    no warnings;
+    local $@;
+    if (defined $_[1] && eval { &UNIVERSAL::VERSION; 1}) {
+      $^H |= 0x20000
+        unless _PERL_LT_5_8_4;
+      $^H{strictures_enable} = int $_[1];
+    }
   }
-  goto &UNIVERSAL::VERSION;
+  _CAN_GOTO_VERSION ? goto &UNIVERSAL::VERSION : &UNIVERSAL::VERSION;
 }
 
 our %extra_load_states;
