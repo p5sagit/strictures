@@ -14,6 +14,7 @@ $VERSION = 2; # a bit of a cheat, but requesting v2 needs to be possible
 
 our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
   closure
+  chmod
   deprecated
   exiting
   experimental
@@ -72,6 +73,7 @@ our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
   taint
   threads
   uninitialized
+  umask
   unpack
   untie
   utf8
