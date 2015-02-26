@@ -1,9 +1,5 @@
 Release history for strictures
 
-1.999_002 - 2015-02-05
-  - Fix incompatibility with perl 5.6
-
-1.999_001 - 2015-02-01
   * Incompatible Changes
     - strictures 2 fatalizes only a subset of warnings.  Some warning
       categories are not safe to catch, or just inappropriate to have fatal.
