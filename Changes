@@ -1,5 +1,6 @@
 Release history for strictures
 
+2.000000 - 2015-02-26
   * Incompatible Changes
     - strictures 2 fatalizes only a subset of warnings.  Some warning
       categories are not safe to catch, or just inappropriate to have fatal.
