@@ -1,5 +1,13 @@
 language: perl
 perl:
+  - "5.8.1"
+  - "5.8.1-thr"
+  - "5.8.2"
+  - "5.8.2-thr"
+  - "5.8.3"
+  - "5.8.3-thr"
+  - "5.8.4"
+  - "5.8.4-thr"
   - "5.8"
   - "5.10"
   - "5.12"
@@ -10,8 +18,6 @@ perl:
   - "dev"
 matrix:
   include:
-    - perl: 5.8.1
-      env: AUTHOR_TESTING=0
     - perl: 5.18
       env: COVERAGE=1
 sudo: false
