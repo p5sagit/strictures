@@ -90,14 +90,16 @@ use strictures;
 
   {
     open my $fh, '>', \(my $str = '');
+    my $e;
     {
       local *STDERR = $fh;
       eval qq{
 #line 1 "t/load_fail.t"
 use strictures;
 1;
-      } or die "$@";
+      } or $e = "$@";
     }
+    die $e if defined $e;
 
     strictures->import;
     like(
@@ -109,14 +111,16 @@ use strictures;
 
   {
     open my $fh, '>', \(my $str = '');
+    my $e;
     {
       local *STDERR = $fh;
       eval qq{
 #line 1 "t/load_fail.t"
 use strictures;
 1;
-      } or die "$@";
+      } or $e = "$@";
     }
+    die $e if defined $e;
 
     is $str, '', "extra dep load failure is not reported a second time";
   }
