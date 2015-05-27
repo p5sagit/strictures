@@ -1,51 +1,54 @@
 BEGIN { $ENV{PERL_STRICTURES_EXTRA} = 0 }
 
+sub capture_hints {
+  my $code = shift;
+  my ($hints, $warning_bits);
+  $code .= q{
+    ;
+    BEGIN {
+      # ignore lexicalized hints
+      $hints = $^H & ~ 0x20000;
+      $warning_bits = defined ${^WARNING_BITS} ? (unpack "H*", ${^WARNING_BITS}) : undef;
+    };
+    1;
+  };
+  eval $code or die $@;
+  return ($hints, $warning_bits);
+}
+
+use strict;
+use warnings;
 use Test::More qw(no_plan);
 
-our ($hints, $warning_bits);
-
-sub capture_hints {
-  # ignore lexicalized hints
-  $hints = $^H & ~ 0x20000;
-  $warning_bits = defined ${^WARNING_BITS} ? (unpack "H*", ${^WARNING_BITS}) : undef;
+sub compare_hints {
+  my ($code_want, $code_got, $name) = @_;
+  my ($want_hints, $want_warnings) = capture_hints $code_want;
+  my ($hints, $warnings) = capture_hints $code_got;
+  is($hints,    $want_hints, "Hints correct for $name");
+  is($warnings, $want_warnings,  "Warnings correct for $name");
 }
 
-sub test_hints {
-  my $name = shift;
-  my $want_hints = $hints;
-  my $want_bits = $warning_bits;
-  capture_hints;
-  is($hints,        $want_hints, "Hints ok for $name");
-  is($warning_bits, $want_bits,  "Warnings ok for $name");
-}
-
-{
+compare_hints q{
   use strict;
   use warnings FATAL => 'all';
-  BEGIN { capture_hints }
-}
-
-{
+},
+q{
   use strictures 1;
-  BEGIN { test_hints "version 1" }
-}
+},
+  'version 1';
 
-{
+compare_hints q{
   use strict;
-  BEGIN {
-    warnings->import('all');
-    warnings->import(FATAL => @strictures::WARNING_CATEGORIES);
-    warnings->unimport(FATAL => @strictures::V2_NONFATAL);
-    warnings->import(@strictures::V2_NONFATAL);
-    warnings->unimport(@strictures::V2_DISABLE);
-  }
-  BEGIN { capture_hints }
-}
-
-{
+  use warnings 'all';
+  use warnings FATAL => @strictures::WARNING_CATEGORIES;
+  no warnings FATAL => @strictures::V2_NONFATAL;
+  use warnings @strictures::V2_NONFATAL;
+  no warnings @strictures::V2_DISABLE;
+},
+q{
   use strictures 2;
-  BEGIN { test_hints "version 2" }
-}
+},
+  'version 2';
 
 my $v;
 eval { $v = strictures->VERSION; 1 } or diag $@;
