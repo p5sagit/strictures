@@ -101,7 +101,6 @@ use strictures;
     }
     die $e if defined $e;
 
-    strictures->import;
     like(
       $str,
       qr/Missing were:\n\n  indirect multidimensional bareword::filehandles/,
