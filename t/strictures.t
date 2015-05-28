@@ -1,24 +1,26 @@
 BEGIN { $ENV{PERL_STRICTURES_EXTRA} = 0 }
 
-sub capture_hints {
-  my $code = shift;
-  my ($hints, $warning_bits);
-  $code .= q{
-    ;
-    BEGIN {
-      # ignore lexicalized hints
-      $hints = $^H & ~ 0x20000;
-      $warning_bits = defined ${^WARNING_BITS} ? (unpack "H*", ${^WARNING_BITS}) : undef;
-    };
-    1;
-  };
-  eval $code or die $@;
-  return ($hints, $warning_bits);
-}
+sub _eval { eval $_[0] }
 
 use strict;
 use warnings;
 use Test::More qw(no_plan);
+
+sub capture_hints {
+  my $code = shift;
+  $code .= q{
+    ;
+    my @h;
+    BEGIN { @h = ( $^H, ${^WARNING_BITS} ) }
+    @h;
+  };
+  my ($hints, $warning_bits) = _eval $code or die $@;
+  # ignore lexicalized hints
+  $hints &= ~ 0x20000;
+  $warning_bits = unpack "H*", $warning_bits
+    if defined $warning_bits;
+  return ($hints, $warning_bits);
+}
 
 sub compare_hints {
   my ($code_want, $code_got, $name) = @_;
