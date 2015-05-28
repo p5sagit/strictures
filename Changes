@@ -1,5 +1,10 @@
 Release history for strictures
 
+  - avoid using goto &UNIVERSAL::VERSION on perl 5.8, since it segfaults some
+    builds
+  - also detect development directories based on .bzr directory
+  - various test cleanups
+
 2.000000 - 2015-02-26
   * Incompatible Changes
     - strictures 2 fatalizes only a subset of warnings.  Some warning
