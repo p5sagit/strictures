@@ -61,3 +61,8 @@ eval qq{ use strictures $next; };
 
 like $@, qr/strictures version $next required/,
   "Can't use strictures $next (this is version $v)";
+
+eval qq{ use strictures $strictures::VERSION; };
+
+is $@, '',
+  "Can use current strictures version";
