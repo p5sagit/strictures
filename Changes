@@ -1,5 +1,6 @@
 Release history for strictures
 
+2.000001 - 2015-06-28
   - update for perl 5.22 warning categories
   - avoid using goto &UNIVERSAL::VERSION on perl 5.8, since it segfaults some
     builds
