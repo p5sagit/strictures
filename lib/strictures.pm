@@ -10,7 +10,7 @@ BEGIN {
   *_CAN_GOTO_VERSION = ($] >= 5.010000) ? sub(){1} : sub(){0};
 }
 
-our $VERSION = '2.000000';
+our $VERSION = '2.000001';
 $VERSION = eval $VERSION;
 
 our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
