@@ -1,11 +1,11 @@
 use strict;
 use warnings FATAL => 'all';
 use 5.006;
+require "inc/ExtUtils/HasCompiler.pm";
 
 my $have_compiler
   = ! parse_args()->{PUREPERL_ONLY}
-  &&  eval { require ExtUtils::CBuilder; 1 }
-  && ExtUtils::CBuilder->new->have_compiler;
+  && ExtUtils::HasCompiler::can_compile_loadable_object(quiet => 1);
 
 my %extra_prereqs = (
   indirect => 0,
