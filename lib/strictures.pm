@@ -106,7 +106,7 @@ our $Smells_Like_VCS;
 
 sub import {
   my $class = shift;
-  my %opts = ref $_[0] ? %{$_[0]} : @_;
+  my %opts = @_ == 1 ? %{$_[0]} : @_;
   if (!exists $opts{version}) {
     $opts{version}
       = exists $^H{strictures_enable} ? delete $^H{strictures_enable}
