@@ -62,6 +62,16 @@ eval qq{ use strictures $next; };
 like $@, qr/strictures version $next required/,
   "Can't use strictures $next (this is version $v)";
 
+eval qq{ use strictures {version => $next}; };
+
+like $@, qr/Major version specified as $next - not supported/,
+  "Can't use strictures version option $next (this is version $v)";
+
+eval qq{ use strictures {version => undef}; };
+
+like $@, qr/Major version specified as undef - not supported/,
+  "Can't use strictures version option undef";
+
 eval qq{ use strictures $strictures::VERSION; };
 
 is $@, '',
