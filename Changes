@@ -1,6 +1,7 @@
 Release history for strictures
 
   - use ExtUtils::HasCompiler to detect compiler rather than ExtUtils::CBuilder
+  - more comprehensive testing
 
 2.000001 - 2015-06-28
   - update for perl 5.22 warning categories
