@@ -1,5 +1,6 @@
 Release history for strictures
 
+2.000002 - 2015-11-04
   - use ExtUtils::HasCompiler to detect compiler rather than ExtUtils::CBuilder
   - more comprehensive testing
 
