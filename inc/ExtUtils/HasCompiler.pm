@@ -1,5 +1,5 @@
 package ExtUtils::HasCompiler;
-$ExtUtils::HasCompiler::VERSION = '0.012';
+$ExtUtils::HasCompiler::VERSION = '0.013';
 use strict;
 use warnings;
 
@@ -108,8 +108,8 @@ sub can_compile_loadable_object {
 	else {
 		my @extra;
 		if ($^O eq 'MSWin32') {
-			push @extra, "$abs_basename.def";
-			push @extra, '-l' . ($libperl =~ /lib([^.]+)\./)[0];
+			my $lib = '-l' . ($libperl =~ /lib([^.]+)\./)[0];
+			push @extra, "$abs_basename.def", $lib, $perllibs;
 		}
 		elsif ($^O eq 'cygwin') {
 			push @extra, catfile($incdir, $config->get('useshrplib') ? 'libperl.dll.a' : 'libperl.a');
@@ -118,8 +118,11 @@ sub can_compile_loadable_object {
 			$lddlflags =~ s/\Q$(BASEEXT)\E/$abs_basename/;
 			$lddlflags =~ s/\Q$(PERL_INC)\E/$incdir/;
 		}
+		elsif ($^O eq 'android') {
+			push @extra, qq{"-L$incdir"}, '-lperl', $perllibs;
+		}
 		push @commands, qq{$cc $ccflags $optimize "-I$incdir" $cccdlflags -c $source_name -o $object_file};
-		push @commands, qq{$cc $optimize $object_file -o $loadable_object $lddlflags @extra $perllibs};
+		push @commands, qq{$cc $optimize $object_file -o $loadable_object $lddlflags @extra};
 	}
 
 	for my $command (@commands) {
@@ -132,7 +135,7 @@ sub can_compile_loadable_object {
 
 	require DynaLoader;
 	local @DynaLoader::dl_require_symbols = "boot_$basename";
-	my $handle = DynaLoader::dl_load_file($loadable_object, 0);
+	my $handle = DynaLoader::dl_load_file(File::Spec->rel2abs($loadable_object), 0);
 	if ($handle) {
 		my $symbol = DynaLoader::dl_find_symbol($handle, "boot_$basename") or do { carp "Couldn't find boot symbol for $basename"; return };
 		my $compilet = DynaLoader::dl_install_xsub('__ANON__::__ANON__', $symbol, $source_name);
@@ -168,7 +171,7 @@ ExtUtils::HasCompiler - Check for the presence of a compiler
 
 =head1 VERSION
 
-version 0.012
+version 0.013
 
 =head1 DESCRIPTION
 
