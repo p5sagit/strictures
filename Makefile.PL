@@ -51,7 +51,7 @@ my %META = (
     license => [ 'http://dev.perl.org/licenses/' ],
   },
   no_index => {
-    directory => [ 't', 'xt' ]
+    directory => [ 't', 'xt', 'inc' ]
   },
 );
 
