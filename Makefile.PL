@@ -1,11 +1,12 @@
 use strict;
 use warnings FATAL => 'all';
 use 5.006;
-require "inc/ExtUtils/HasCompiler.pm";
+use lib 'inc';
+use ExtUtils::HasCompiler 'can_compile_loadable_object';
 
 my $have_compiler
   = ! parse_args()->{PUREPERL_ONLY}
-  && ExtUtils::HasCompiler::can_compile_loadable_object(quiet => 1);
+  && can_compile_loadable_object(quiet => 1);
 
 my %extra_prereqs = (
   indirect => 0,
