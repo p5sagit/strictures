@@ -1,5 +1,6 @@
 Release history for strictures
 
+2.000003 - 2016-04-19
   - update bundled ExtUtils::HasCompiler to 0.013 to fix potential false
     negative (RT#113637)
   - list optional XS dependencies as suggests rather than recommends (RT#107393)
