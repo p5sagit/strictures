@@ -1,5 +1,8 @@
 Release history for strictures
 
+  - update bundled ExtUtils::HasCompiler to 0.021
+  - update internal list of warnings (no behavior change)
+
 2.000003 - 2016-04-19
   - update bundled ExtUtils::HasCompiler to 0.013 to fix potential false
     negative (RT#113637)
