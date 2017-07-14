@@ -22,6 +22,7 @@ our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
     experimental::autoderef
     experimental::bitwise
     experimental::const_attr
+    experimental::declared_refs
     experimental::lexical_subs
     experimental::lexical_topic
     experimental::postderef
