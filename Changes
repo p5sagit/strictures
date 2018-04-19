@@ -1,5 +1,6 @@
 Release history for strictures
 
+2.000004 - 2018-04-19
   - update bundled ExtUtils::HasCompiler to 0.021
   - update internal list of warnings (no behavior change)
 
