@@ -19,6 +19,7 @@ our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
   deprecated
   exiting
   experimental
+    experimental::alpha_assertions
     experimental::autoderef
     experimental::bitwise
     experimental::const_attr
@@ -29,6 +30,7 @@ our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
     experimental::re_strict
     experimental::refaliasing
     experimental::regex_sets
+    experimental::script_run
     experimental::signatures
     experimental::smartmatch
     experimental::win32_perlio
@@ -59,6 +61,7 @@ our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
     inplace
     internal
     malloc
+  shadow
   signal
   substr
   syntax
