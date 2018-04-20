@@ -39,10 +39,14 @@ my %META = (
     } },
   },
   resources => {
+    # GitHub mirrors from Shadowcat. We list it so we can get pull requests.
+    # The canonical repo is:
+    # r/o: git://git.shadowcat.co.uk/p5sagit/strictures.git
     # r/w: p5sagit@git.shadowcat.co.uk:strictures.git
+    # web: http://git.shadowcat.co.uk/gitweb/gitweb.cgi?p=p5sagit/strictures.git
     repository => {
-      url => 'git://git.shadowcat.co.uk/p5sagit/strictures.git',
-      web => 'http://git.shadowcat.co.uk/gitweb/gitweb.cgi?p=p5sagit/strictures.git',
+      url => 'https://github.com/p5sagit/strictures.git',
+      web => 'https://github.com/p5sagit/strictures',
       type => 'git',
     },
     bugtracker => {
