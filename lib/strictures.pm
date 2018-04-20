@@ -250,7 +250,7 @@ EOE
 __END__
 =head1 NAME
 
-strictures - turn on strict and make most warnings fatal
+strictures - Turn on strict and make most warnings fatal
 
 =head1 SYNOPSIS
 
