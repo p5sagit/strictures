@@ -11,7 +11,7 @@ BEGIN {
 }
 
 our $VERSION = '2.000005';
-$VERSION = eval $VERSION;
+$VERSION =~ tr/_//d;
 
 our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
   closure
