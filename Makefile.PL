@@ -60,6 +60,14 @@ my %META = (
     directory => [ 't', 'xt', 'inc' ]
   },
   x_authority => 'cpan:MSTROUT',
+  x_contributors => [ # manually added, from git shortlog -e -s -n
+    'Graham Knop <haarg@haarg.org>',
+    'Karen Etheridge <ether@cpan.org>',
+    'Matt S Trout <mst@shadowcat.co.uk>',
+    'Peter Rabbitson <ribasushi@cpan.org>',
+    'Christian Walde <walde.christian@googlemail.com>',
+    'Diab Jerius <djerius@cfa.harvard.edu>',
+  ],
 );
 
 my %MM_ARGS = (
