@@ -59,7 +59,7 @@ my %META = (
 
 my %MM_ARGS = (
   PREREQ_PM => {
-    ($] >= 5.008004 && $have_compiler ? %extra_prereqs : () )
+    ("$]" >= 5.008004 && $have_compiler ? %extra_prereqs : () )
   },
 );
 

@@ -4,10 +4,10 @@ use strict;
 use warnings FATAL => 'all';
 
 BEGIN {
-  *_PERL_LT_5_8_4 = ($] < 5.008004) ? sub(){1} : sub(){0};
+  *_PERL_LT_5_8_4 = ("$]" < 5.008004) ? sub(){1} : sub(){0};
   # goto &UNIVERSAL::VERSION usually works on 5.8, but fails on some ARM
   # machines.  Seems to always work on 5.10 though.
-  *_CAN_GOTO_VERSION = ($] >= 5.010000) ? sub(){1} : sub(){0};
+  *_CAN_GOTO_VERSION = ("$]" >= 5.010000) ? sub(){1} : sub(){0};
 }
 
 our $VERSION = '2.000005';

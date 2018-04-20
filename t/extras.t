@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Test::More 0.88;
 
-plan skip_all => 'Extra tests disabled on perls <= 5.008003' unless $] >= 5.008_004;
+plan skip_all => 'Extra tests disabled on perls <= 5.008003' unless "$]" >= 5.008_004;
 
 use File::Temp;
 use Cwd 'cwd';
