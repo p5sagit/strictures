@@ -17,6 +17,7 @@ my %extra_prereqs = (
 my %META = (
   name => 'strictures',
   license => 'perl_5',
+  dynamic_config => 1,
   prereqs => {
     configure => { requires => { } },
     build => { requires => { } },
