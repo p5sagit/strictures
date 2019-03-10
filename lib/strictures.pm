@@ -27,6 +27,7 @@ our @WARNING_CATEGORIES = grep { exists $warnings::Offsets{$_} } qw(
     experimental::lexical_subs
     experimental::lexical_topic
     experimental::postderef
+    experimental::private_use
     experimental::re_strict
     experimental::refaliasing
     experimental::regex_sets
