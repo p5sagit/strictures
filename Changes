@@ -1,5 +1,6 @@
 Release history for strictures
 
+2.000006 - 2019-03-10
   - update internal list of warnings for categories added in blead (v5.29.9)
   - fix extras test to avoid any files in the temp directory's parent
     directories interfering (RT#128751)
